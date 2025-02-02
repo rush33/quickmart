@@ -1,8 +1,8 @@
 {
   "expo": {
     "name": "quickmart",
-    "slug": "quickmart",
-    "version": "0.1.0",
+    "slug": "quick-mart",
+    "version": "0.1.1",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -36,6 +36,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "9741c115-4ae6-44dc-900a-13cd674b3487"
+      }
+    },
+    "owner": "rush33"
   }
 }

@@ -1,8 +1,20 @@
-import { Tabs } from "expo-router";
+import { Tabs, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { tintColor } from "@/constants/Colors";
+import { useAuth } from "../../context/AuthContext";
+import { useEffect } from "react";
 
 export default function TabLayout() {
+  const { user } = useAuth();
+  const router = useRouter();
+
+  // useEffect(() => {
+  //   if (!user) {
+  //     router.replace("/(auth)/Onboarding");
+  //   }
+  // }, [user]);
+  // if (!user) return null; // Prevent flashing of protected screens
+
   return (
     <Tabs
       screenOptions={{

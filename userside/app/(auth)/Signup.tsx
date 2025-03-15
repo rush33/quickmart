@@ -1,7 +1,18 @@
 import React, { useState } from "react";
-import { View, TextInput, Button, Text, Alert } from "react-native";
+import {
+  View,
+  TextInput,
+  Text,
+  Alert,
+  Image,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  StatusBar,
+} from "react-native";
 import { useRouter } from "expo-router";
 import { useAuth } from "@/context/AuthContext";
+import PrimaryButton from "@/components/PrimaryButton";
 
 export default function SignupScreen() {
   const [email, setEmail] = useState("");
@@ -20,34 +31,69 @@ export default function SignupScreen() {
       if (!res.success) {
         Alert.alert("Sign Up", res.msg);
       }
-      // router.push("/(tabs)");
     } catch (err) {
       setError(err.message);
     }
   };
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", padding: 16 }}>
-      <Text>Signup</Text>
-      {error ? <Text style={{ color: "red" }}>{error}</Text> : null}
-      <TextInput
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        style={{ marginVertical: 8, borderWidth: 1, padding: 8 }}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      className="flex-1 bg-black"
+    >
+      <StatusBar barStyle="dark-content" />
+      {/* Top Image Section */}
+      <Image
+        source={require("../../assets/images/delivery.jpg")}
+        className="absolute w-full h-full"
+        resizeMode="cover"
       />
-      <TextInput
-        placeholder="Password"
-        value={password}
-        onChangeText={setPassword}
-        secureTextEntry
-        style={{ marginVertical: 8, borderWidth: 1, padding: 8 }}
-      />
-      <Button title="Signup" onPress={handleSignup} />
-      <Button
-        title="Go to Login"
-        onPress={() => router.push("/(auth)/Login")}
-      />
-    </View>
+
+      {/* Content Overlay */}
+      <View className="flex-1 justify-end">
+        {/* White curved container */}
+        <View className="bg-white rounded-t-[40px] px-8 pt-10 pb-14">
+          <Text className="text-2xl font-extrabold mb-3">Create Account</Text>
+          <Text className="text-lg text-gray-600 mb-8">
+            Join us and start your baking adventure
+          </Text>
+
+          {error ? (
+            <Text className="text-red-500 mb-4 text-center">{error}</Text>
+          ) : null}
+
+          <TextInput
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            className="border border-gray-300 rounded-lg p-4 mb-4"
+            placeholderTextColor="#666"
+          />
+
+          <TextInput
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            className="border border-gray-300 rounded-lg p-4 mb-8"
+            placeholderTextColor="#666"
+          />
+
+          <PrimaryButton
+            title="Sign Up"
+            isPrimary={true}
+            loading={loading}
+            onPressFunction={handleSignup}
+          />
+
+          <TouchableOpacity onPress={() => router.push("/(auth)/Login")}>
+            <Text className="text-gray-600 text-center mt-4">
+              Already have an account?{" "}
+              <Text className="text-black">Sign in</Text>
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </KeyboardAvoidingView>
   );
 }

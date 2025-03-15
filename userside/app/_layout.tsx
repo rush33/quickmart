@@ -1,7 +1,8 @@
 import { Slot, useSegments, useRouter } from "expo-router";
 import { AuthContextProvider, useAuth } from "../context/AuthContext";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { useEffect } from "react";
+import { StatusBar } from "expo-status-bar";
+import { View } from "react-native";
 
 const MainLayout = () => {
   const { isAuthenticated } = useAuth();
@@ -26,9 +27,10 @@ const MainLayout = () => {
 export default function RootLayout() {
   return (
     <AuthContextProvider>
-      <SafeAreaView style={{ flex: 1 }}>
+      <StatusBar style="dark" />
+      <View className="flex-1">
         <MainLayout />
-      </SafeAreaView>
+      </View>
     </AuthContextProvider>
   );
 }

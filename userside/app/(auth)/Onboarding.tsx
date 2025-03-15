@@ -1,42 +1,54 @@
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { View, Text, Image, TouchableOpacity, Dimensions } from "react-native";
 import { useRouter } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
-let renderCount = 0;
+import { OnboardingCopy } from "@/utils/Constants";
+import PrimaryButton from "@/components/PrimaryButton";
 
 const OnboardingScreen = () => {
   const router = useRouter();
 
-  renderCount += 1;
-  console.log("onb screen rendered", renderCount, "times");
+  const handleSignUp = () => {
+    router.replace("/(auth)/Signup");
+  };
+
+  const navigateSignIn = () => {
+    router.push("/(auth)/Login");
+  };
 
   return (
-    <SafeAreaView className="flex-1 justify-center items-center p-5 bg-gray-50">
+    <View className="flex-1 bg-black">
+      {/* Top Image Section */}
       <Image
-        source={{ uri: "https://via.placeholder.com/300" }}
-        className="w-[300px] h-[300px] mb-5"
-        resizeMode="contain"
+        source={require("../../assets/images/onb.png")}
+        className="absolute w-full h-full"
+        resizeMode="cover"
       />
-      <Text className="text-2xl font-bold mb-2.5 text-center">
-        Welcome to Our App
-      </Text>
-      <Text className="text-base text-gray-600 text-center mb-8 px-2.5">
-        Discover new features, connect with friends, and enjoy personalized
-        experiences.
-      </Text>
 
-      <TouchableOpacity
-        className="bg-blue-500 py-3 px-8 rounded-lg mb-5"
-        onPress={() => router.replace("/(auth)/Signup")}
-      >
-        <Text className="text-white text-base font-semibold">Get Started</Text>
-      </TouchableOpacity>
+      {/* Content Overlay */}
+      <View className="flex-1 justify-end">
+        {/* White curved container */}
+        <View className="bg-white rounded-t-[40px] px-8 pt-10 pb-14">
+          <Text className="text-2xl font-extrabold mb-3">
+            {OnboardingCopy.HEADING}
+          </Text>
+          <Text className="text-lg text-gray-600 mb-8">
+            {OnboardingCopy.SUBHEADING}
+          </Text>
 
-      <TouchableOpacity onPress={() => router.push("/(auth)/Login")}>
-        <Text className="text-blue-500 text-sm font-medium text-center">
-          Already have an account? Log in
-        </Text>
-      </TouchableOpacity>
-    </SafeAreaView>
+          <PrimaryButton
+            title="Sign Up"
+            isPrimary={true}
+            loading={false}
+            onPressFunction={handleSignUp}
+          />
+
+          <TouchableOpacity onPress={navigateSignIn}>
+            <Text className="text-gray-600 text-center">
+              Already a member yet? <Text className="text-black">Sign in</Text>
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
   );
 };
 

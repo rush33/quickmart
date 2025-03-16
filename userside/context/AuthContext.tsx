@@ -57,6 +57,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         email,
         password
       );
+      // TODO: SAVE USER TO DB
       // await setDoc(doc(db, "users", response?.user?.uid), {
       //   firstName,
       //   lastName,
@@ -81,8 +82,8 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     } catch (error) {
       let msg = error.message;
       if (msg.includes("(auth/invalid-email)")) msg = "Email is invalid";
-      if (msg.includes("(auth/invalid-credentials)"))
-        msg = "Email/Password is incorrect";
+      if (msg.includes("(auth/invalid-credential)"))
+        msg = "Email or Password is incorrect";
       if (msg.includes("(auth/user-not-found)")) msg = "User not found";
       if (msg.includes("(auth/wrong-password)")) msg = "Incorrect password";
       return { success: false, msg };

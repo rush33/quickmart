@@ -16,10 +16,10 @@ const Header = () => {
           <MaterialIcons name="location-on" size={24} color="#FF4D00" />
           <View>
             <Text style={{ fontSize: 18, fontWeight: "600" }}>
-              Podum Nagar 2
+              Jorhat Main Market
             </Text>
             <Text style={{ color: "#666" }}>
-              Podum Nagar 2, Dibrugarh, Assam 786622, India
+              Atilagaon, Jorhat, Assam 785001, India
             </Text>
           </View>
         </View>

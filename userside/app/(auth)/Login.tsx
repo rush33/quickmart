@@ -44,7 +44,7 @@ export default function Login() {
     >
       {/* Top Image Section */}
       <Image
-       source={require("../../assets/images/cycle.jpg")}
+        source={require("../../assets/images/cycle.jpg")}
         className="absolute w-full h-2/3"
         resizeMode="cover"
       />
@@ -56,8 +56,9 @@ export default function Login() {
           {/* TODO: FIND BETTER APPROACH TO KEYBOARD AVOID VIEW OR make pb less when the keybpard avoiding view has been activated and things are moved up */}
           <Text className="text-2xl font-extrabold mb-3">Welcome Back!</Text>
           <Text className="text-lg text-gray-600 mb-8">
-            Sign in to continue your baking journey
+            Sign in to start your grocery shopping adventure
           </Text>
+
           {error ? (
             <Text className="text-red-500 mb-4 text-center">{error}</Text>
           ) : null}

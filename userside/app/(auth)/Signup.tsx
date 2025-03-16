@@ -55,7 +55,7 @@ export default function SignupScreen() {
         <View className="bg-white rounded-t-[40px] px-8 pt-10 pb-14">
           <Text className="text-2xl font-extrabold mb-3">Create Account</Text>
           <Text className="text-lg text-gray-600 mb-8">
-            Join us and start your baking adventure
+            Get fresh groceries delivered to your doorstep, anytime!
           </Text>
 
           {error ? (

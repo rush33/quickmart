@@ -20,7 +20,8 @@ interface AuthContextProps {
   isAuthenticated: boolean;
   SignUp: (
     email: string,
-    password: string
+    password: string,
+    fname: string
   ) => Promise<{ success: boolean; msg?: string }>;
   SignIn: (
     email: string,
@@ -50,27 +51,38 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     return () => unsubscribe();
   }, []);
 
-  const SignUp = async (email: string, password: string) => {
+  const SignUp = async (email: string, password: string, fname: string) => {
     try {
       const response = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
-      // TODO: SAVE USER TO DB
-      // await setDoc(doc(db, "users", response?.user?.uid), {
-      //   firstName,
-      //   lastName,
-      //   userId: response?.user?.uid,
-      // });
+      console.log("User created successfully:", response.user.uid);
+
+      await setDoc(doc(db, "users", response.user.uid), {
+        email,
+        userId: response.user.uid,
+        fname,
+      });
+
+      console.log("User data saved to Firestore:", {
+        email,
+        userId: response.user.uid,
+        fname,
+      });
+
       return { success: true };
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Error during SignUp:", error);
+
       let msg = error.message;
       if (msg.includes("(auth/invalid-email)")) msg = "Email is invalid";
       if (msg.includes("(auth/email-already-in-use)"))
         msg = "This email is already in use";
       if (msg.includes("(auth/weak-password)"))
-        msg = "Password must be atleast 6 characters";
+        msg = "Password must be at least 6 characters";
+
       return { success: false, msg };
     }
   };

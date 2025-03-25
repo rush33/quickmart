@@ -16,6 +16,7 @@ import PrimaryButton from "@/components/PrimaryButton";
 
 export default function SignupScreen() {
   const [email, setEmail] = useState("");
+  const [fname, setFname] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -25,7 +26,7 @@ export default function SignupScreen() {
   const handleSignup = async () => {
     try {
       setLoading(true);
-      let res = await SignUp(email, password);
+      let res = await SignUp(email, password, fname);
       setLoading(false);
       console.log("res in signup", res);
       if (!res.success) {
@@ -61,6 +62,14 @@ export default function SignupScreen() {
           {error ? (
             <Text className="text-red-500 mb-4 text-center">{error}</Text>
           ) : null}
+
+          <TextInput
+            placeholder="First Name"
+            value={fname}
+            onChangeText={setFname}
+            className="border border-gray-300 rounded-lg p-4 mb-4"
+            placeholderTextColor="#666"
+          />
 
           <TextInput
             placeholder="Email"

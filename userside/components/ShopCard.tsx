@@ -10,8 +10,7 @@ type ShopCardProps = {
 export default function ShopCard({ shop }: ShopCardProps) {
   return (
     <TouchableOpacity
-      onPress={() => router.navigate(`/shop/${shop.id}`)}
-      // onPress={() => router.navigate("/shop", { id: `${shop.id}` })}
+      onPress={() => router.push(`/shop/${shop.id}`)}
       className="flex-row p-4 border-b border-gray-200 gap-3"
     >
       {/* Shop Image */}

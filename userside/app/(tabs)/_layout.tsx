@@ -1,6 +1,6 @@
 import { Tabs, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { tintColor } from "@/constants/Colors";
+import { tintColor } from "@/constants/colors";
 import { useAuth } from "../../context/AuthContext";
 import { useEffect } from "react";
 

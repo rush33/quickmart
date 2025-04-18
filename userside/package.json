@@ -19,6 +19,7 @@
     "@react-native-async-storage/async-storage": "^2.1.0",
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/native": "^7.0.14",
+    "@reduxjs/toolkit": "^2.7.0",
     "expo": "^52.0.27",
     "expo-blur": "~14.0.2",
     "expo-constants": "~17.0.4",
@@ -32,6 +33,7 @@
     "expo-system-ui": "~4.0.7",
     "expo-web-browser": "~14.0.2",
     "firebase": "^11.2.0",
+    "firebase-admin": "^13.2.0",
     "nativewind": "^4.1.23",
     "react": "18.3.1",
     "react-dom": "18.3.1",
@@ -41,7 +43,8 @@
     "react-native-safe-area-context": "^5.1.0",
     "react-native-screens": "~4.4.0",
     "react-native-web": "~0.19.13",
-    "react-native-webview": "13.12.5"
+    "react-native-webview": "13.12.5",
+    "react-redux": "^9.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

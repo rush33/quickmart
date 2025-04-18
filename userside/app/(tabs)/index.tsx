@@ -9,6 +9,9 @@ import {
 import Header from "../../components/Header";
 import ShopCard from "../../components/ShopCard";
 import "../../global.css";
+import { useEffect, useState } from "react";
+import { fetchData } from "../../utils/firebaseConfig";
+import { Shop } from "@/types/shop";
 
 // Static data for category sections
 const categories = [
@@ -74,52 +77,41 @@ const categories = [
   },
 ];
 
-// Static data for shops
-const shops = [
-  {
-    id: 1,
-    name: "Trishna Grocery",
-    image:
-      "https://ik.imagekit.io/jtfemdkjq/6_How-to-Start-a-Grocery-Store-in-India_.png?updatedAt=1742221847486",
-    rating: 4.4,
-    reviews: "1.2K",
-    timeRange: "15-20 mins",
-    categories: [
-      "Fruits & Vegetables",
-      "Dairy & Eggs",
-      "Grains & Pulses",
-      "Spices",
-    ],
-    location: "JB Road",
-    distance: "3.2 km",
-    freeDelivery: true,
-  },
-  {
-    id: 2,
-    name: "Urban Fresh Mart",
-    image:
-      "https://ik.imagekit.io/jtfemdkjq/image_750x500_629b83c96c9fd.webp?updatedAt=1742221959358",
-    rating: 4.6,
-    reviews: "1.5K",
-    timeRange: "25-30 mins",
-    categories: ["Snacks", "Drinks", "Frozen Food", "Breakfast Items"],
-    location: "Gar Ali",
-    distance: "1.7 km",
-    freeDelivery: true,
-  },
-];
-
 export default function Index() {
+  const [shopData, setShopData] = useState<Shop[]>([]);
+
+  useEffect(() => {
+    const loadShops = async () => {
+      try {
+        const shopsData = (await fetchData("shops")) as any[];
+        const typedShops = shopsData.map((shop) => ({
+          id: shop.id,
+          name: shop.name || "",
+          image: shop.image || "",
+          rating: Number(shop.rating) || 0,
+          address: shop.address || "",
+          genre: Array.isArray(shop.genre) ? shop.genre : [],
+          lat: Number(shop.lat) || 0,
+          lng: Number(shop.lng) || 0,
+        }));
+        setShopData(typedShops);
+        // console.log("Shops from Firestore:", typedShops);
+      } catch (error) {
+        console.error("Error loading shops:", error);
+      }
+    };
+
+    loadShops();
+  }, []);
+
   return (
     <SafeAreaView className="flex-1 bg-white">
       <StatusBar barStyle="default" />
-
-      {/* Header with Search Bar */}
       <Header />
 
       {/* Main Content */}
       <FlatList
-        data={[...categories]} // Using categories as the main list
+        data={[...categories]}
         keyExtractor={(item, index) => `category-${index}`}
         renderItem={({ item }) => (
           <View className="mb-4 px-4">
@@ -144,7 +136,7 @@ export default function Index() {
         )}
         ListFooterComponent={
           <View className="px-4">
-            {shops.map((shop) => (
+            {shopData.map((shop) => (
               <ShopCard key={shop.id} shop={shop} />
             ))}
           </View>

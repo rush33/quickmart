@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { initializeAuth, getReactNativePersistence } from "firebase/auth";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
+import { collection, getDocs } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDBrids-pfaLIl6two1mxlHHMHaqDf58Gk",
@@ -20,3 +21,18 @@ export const auth = initializeAuth(app, {
 });
 
 export const db = getFirestore(app);
+
+export const fetchData = async (collectionName: string) => {
+  try {
+    const querySnapshot = await getDocs(collection(db, collectionName));
+    const data = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    // console.log("Firestore Data:", data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    throw error;
+  }
+};

@@ -40,7 +40,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     const unsubscribe = onAuthStateChanged(
       auth,
       (currentUser) => {
-        console.log("Refresh triggered:", currentUser);
+        // console.log("Refresh triggered:", currentUser);
         setUser(currentUser);
         setIsAuthenticated(!!currentUser);
       },

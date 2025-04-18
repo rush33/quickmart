@@ -3,25 +3,31 @@ import { AuthContextProvider, useAuth } from "../context/AuthContext";
 import { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { View } from "react-native";
+import { Provider } from "react-redux";
+import { store } from "../redux/store";
 
 const MainLayout = () => {
   const { isAuthenticated } = useAuth();
   const segments = useSegments();
-  const router = useRouter(); // Use inside component
+  const router = useRouter();
 
   useEffect(() => {
-    if (isAuthenticated === undefined) return; // Avoid running until determined
+    if (isAuthenticated === undefined) return;
 
-    const isInAppSegment = segments[0] === "(tabs)";
+    const currentSegment = segments[0];
 
-    if (isAuthenticated && !isInAppSegment) {
-      router.replace("/(tabs)"); // Redirect authenticated users
-    } else if (!isAuthenticated && segments[0] !== "(auth)") {
-      router.replace("/(auth)/Onboarding"); // Redirect non-authenticated users
+    if (!isAuthenticated && currentSegment !== "(auth)") {
+      router.replace("/(auth)/Onboarding");
+    } else if (isAuthenticated && currentSegment === "(auth)") {
+      router.replace("/(tabs)");
     }
-  }, [isAuthenticated, segments, router]);
+  }, [isAuthenticated, segments]);
 
-  return <Slot />;
+  return (
+    <Provider store={store}>
+      <Slot />
+    </Provider>
+  );
 };
 
 export default function RootLayout() {

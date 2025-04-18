@@ -1,19 +1,7 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
-
-type Shop = {
-  id: number;
-  name: string;
-  image: string;
-  rating: number;
-  reviews: string;
-  timeRange: string;
-  categories: string[];
-  location: string;
-  distance: string;
-  freeDelivery: boolean;
-};
+import { Shop } from "@/types/shop";
 
 type ShopCardProps = {
   shop: Shop;
@@ -22,15 +10,8 @@ type ShopCardProps = {
 export default function ShopCard({ shop }: ShopCardProps) {
   return (
     <TouchableOpacity
-      onPress={() =>
-        router.push({
-          pathname: "/shop/[id]",
-          params: {
-            id: shop.id,
-            shop: JSON.stringify(shop),
-          },
-        })
-      }
+      onPress={() => router.navigate(`/shop/${shop.id}`)}
+      // onPress={() => router.navigate("/shop", { id: `${shop.id}` })}
       className="flex-row p-4 border-b border-gray-200 gap-3"
     >
       {/* Shop Image */}
@@ -52,19 +33,10 @@ export default function ShopCard({ shop }: ShopCardProps) {
             <Text className="text-white">{shop.rating}</Text>
             <Ionicons name="star" size={12} color="white" />
           </View>
-          <Text className="text-gray-600">({shop.reviews})</Text>
-          <Text className="text-gray-600">{shop.timeRange}</Text>
         </View>
-        <Text className="text-gray-600">{shop.categories.join(", ")}</Text>
-        <Text className="text-gray-600">
-          {shop.location} • {shop.distance}
-        </Text>
-        {shop.freeDelivery && (
-          <View className="flex-row items-center gap-1 mt-1">
-            <MaterialIcons name="delivery-dining" size={16} color="#8424FF" />
-            <Text className="text-[#8424FF]">FREE DELIVERY</Text>
-          </View>
-        )}
+
+        <Text className="text-gray-600">{shop.genre.join(", ")}</Text>
+        <Text className="text-gray-600">{shop.address}</Text>
       </View>
     </TouchableOpacity>
   );

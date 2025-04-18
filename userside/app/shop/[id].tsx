@@ -10,9 +10,38 @@ import {
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useLocalSearchParams, router } from "expo-router";
 
+// Dummy data lookup (replace this with actual API or global state later)
+const DUMMY_SHOPS = [
+  {
+    id: "7WZTRydg9efSTQP0BRpL",
+    name: "Pizza Planet",
+    image: "https://via.placeholder.com/300",
+    rating: 4.6,
+    reviews: 102,
+    categories: ["Pizza", "Italian"],
+    location: "123 Main Street",
+    distance: "1.2 km",
+    timeRange: "10:00 AM - 11:00 PM",
+    freeDelivery: true,
+  },
+  {
+    id: "DtB3bgEbCgNnXraBqCXY",
+    name: "Burger Barn",
+    image: "https://via.placeholder.com/300",
+    rating: 4.2,
+    reviews: 89,
+    categories: ["Burgers", "Fast Food"],
+    location: "456 Burger Lane",
+    distance: "0.8 km",
+    timeRange: "9:00 AM - 10:00 PM",
+    freeDelivery: false,
+  },
+];
+
 export default function ShopDetails() {
-  const { shop: shopParam } = useLocalSearchParams();
-  const shop = JSON.parse(shopParam as string);
+  const { id } = useLocalSearchParams();
+  const shopId = Array.isArray(id) ? id[0] : id;
+  const shop = DUMMY_SHOPS.find((s) => s.id === shopId) || DUMMY_SHOPS[0]; // fallback to dummy
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -74,7 +103,7 @@ export default function ShopDetails() {
           </View>
 
           <Text style={{ color: "#666", fontSize: 16 }}>
-            {shop.categories.join(" • ")}
+            {(shop.categories ?? []).join(" • ")}
           </Text>
 
           <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>

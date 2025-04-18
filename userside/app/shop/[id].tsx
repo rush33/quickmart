@@ -9,132 +9,76 @@ import {
 } from "react-native";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useLocalSearchParams, router } from "expo-router";
-
-// Dummy data lookup (replace this with actual API or global state later)
-const DUMMY_SHOPS = [
-  {
-    id: "7WZTRydg9efSTQP0BRpL",
-    name: "Pizza Planet",
-    image: "https://via.placeholder.com/300",
-    rating: 4.6,
-    reviews: 102,
-    categories: ["Pizza", "Italian"],
-    location: "123 Main Street",
-    distance: "1.2 km",
-    timeRange: "10:00 AM - 11:00 PM",
-    freeDelivery: true,
-  },
-  {
-    id: "DtB3bgEbCgNnXraBqCXY",
-    name: "Burger Barn",
-    image: "https://via.placeholder.com/300",
-    rating: 4.2,
-    reviews: 89,
-    categories: ["Burgers", "Fast Food"],
-    location: "456 Burger Lane",
-    distance: "0.8 km",
-    timeRange: "9:00 AM - 10:00 PM",
-    freeDelivery: false,
-  },
-];
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 export default function ShopDetails() {
   const { id } = useLocalSearchParams();
   const shopId = Array.isArray(id) ? id[0] : id;
-  const shop = DUMMY_SHOPS.find((s) => s.id === shopId) || DUMMY_SHOPS[0]; // fallback to dummy
+  const shop = useSelector((state: RootState) =>
+    state.shop.data.find((s) => s.id === shopId)
+  );
+
+  if (!shop) {
+    return (
+      <SafeAreaView className="flex-1 items-center justify-center bg-white">
+        <Text>Shop not found.</Text>
+      </SafeAreaView>
+    );
+  }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+    <SafeAreaView className="flex-1 bg-white">
       <StatusBar barStyle="dark-content" />
 
       {/* Header */}
-      <View style={{ padding: 16, flexDirection: "row", alignItems: "center" }}>
+      <View className="flex-row items-center px-4 py-3 border-b border-gray-200">
         <TouchableOpacity onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
-        <Text style={{ marginLeft: 16, fontSize: 18, fontWeight: "600" }}>
-          Shop Details
-        </Text>
+        <Text className="ml-4 text-lg font-semibold">Shop Details</Text>
       </View>
 
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         {/* Shop Image */}
-        <View style={{ position: "relative" }}>
+        <View className="relative">
           <Image
             source={{ uri: shop.image }}
-            style={{ width: "100%", height: 200 }}
+            className="w-full h-56"
+            resizeMode="cover"
           />
-          <TouchableOpacity
-            style={{
-              position: "absolute",
-              top: 16,
-              right: 16,
-              backgroundColor: "rgba(255,255,255,0.9)",
-              borderRadius: 20,
-              padding: 8,
-            }}
-          >
+          <TouchableOpacity className="absolute top-4 right-4 bg-white/90 rounded-full p-2">
             <Ionicons name="heart-outline" size={24} color="#666" />
           </TouchableOpacity>
         </View>
 
         {/* Shop Info */}
-        <View style={{ padding: 16, gap: 12 }}>
-          <Text style={{ fontSize: 24, fontWeight: "600" }}>{shop.name}</Text>
+        <View className="px-4 py-5 space-y-4">
+          <Text className="text-2xl font-bold text-gray-900">{shop.name}</Text>
 
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-            <View
-              style={{
-                backgroundColor: "#48C479",
-                paddingHorizontal: 8,
-                paddingVertical: 4,
-                borderRadius: 8,
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 4,
-              }}
-            >
-              <Text style={{ color: "white", fontWeight: "600" }}>
-                {shop.rating}
-              </Text>
-              <Ionicons name="star" size={16} color="white" />
+          <View className="flex-row items-center space-x-2">
+            <View className="flex-row items-center bg-green-500 px-2 py-1 rounded-md">
+              <Text className="text-white font-semibold">{shop.rating}</Text>
+              <Ionicons name="star" size={14} color="white" className="ml-1" />
             </View>
-            <Text style={{ color: "#666" }}>({shop.reviews} reviews)</Text>
-          </View>
-
-          <Text style={{ color: "#666", fontSize: 16 }}>
-            {(shop.categories ?? []).join(" • ")}
-          </Text>
-
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
-            <MaterialIcons name="location-on" size={20} color="#666" />
-            <Text style={{ color: "#666", flex: 1 }}>
-              {shop.location} • {shop.distance}
+            <Text className="text-gray-500 text-sm">
+              ({shop.rating} reviews)
             </Text>
           </View>
 
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
-            <Ionicons name="time-outline" size={20} color="#666" />
-            <Text style={{ color: "#666" }}>{shop.timeRange}</Text>
+          <Text className="text-base text-gray-600">
+            {(shop.genre ?? []).join(" • ")}
+          </Text>
+
+          <View className="flex-row items-center space-x-2">
+            <MaterialIcons name="location-on" size={20} color="#666" />
+            <Text className="text-gray-600 flex-1">{shop.address} • xy</Text>
           </View>
 
-          {shop.freeDelivery && (
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 4,
-                backgroundColor: "#f0e6ff",
-                padding: 12,
-                borderRadius: 8,
-              }}
-            >
-              <MaterialIcons name="delivery-dining" size={20} color="#8424FF" />
-              <Text style={{ color: "#8424FF", fontWeight: "600" }}>
-                FREE DELIVERY
-              </Text>
-            </View>
-          )}
+          <View className="flex-row items-center space-x-2">
+            <Ionicons name="time-outline" size={20} color="#666" />
+            <Text className="text-gray-600">10:00 AM - 11:00 PM</Text>
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>

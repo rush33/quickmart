@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, query, QueryConstraint } from "firebase/firestore";
 import { initializeAuth, getReactNativePersistence } from "firebase/auth";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { collection, getDocs } from "firebase/firestore";
@@ -33,6 +33,27 @@ export const fetchData = async (collectionName: string) => {
     return data;
   } catch (error) {
     console.error("Error fetching data:", error);
+    throw error;
+  }
+};
+
+export const fetchFilteredData = async (
+  collectionName: string,
+  filters: QueryConstraint[]
+) => {
+  try {
+    const ref = collection(db, collectionName);
+    const q = query(ref, ...filters);
+    const querySnapshot = await getDocs(q);
+
+    const data = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+
+    return data;
+  } catch (error) {
+    console.error("Error fetching filtered data:", error);
     throw error;
   }
 };

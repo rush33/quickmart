@@ -1,15 +1,8 @@
+import { CartItem } from "@/types/cartItem";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Alert } from "react-native";
 
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  shopId: string;
-  [key: string]: any; 
-}
-
-interface CartState {
+export interface CartState {
   shopId: string | null;
   items: CartItem[];
 }
@@ -30,15 +23,23 @@ export const cartSlice = createSlice({
         state.shopId = itemShopId;
       }
 
-      if (state.shopId === itemShopId) {
-        state.items.push(action.payload);
-      } else {
+      if (state.shopId !== itemShopId) {
         Alert.alert(
           "Oops!",
           `You cannot add ${action.payload.name} as it's from a different shop.`,
           [{ text: "OK", style: "cancel" }],
           { cancelable: true }
         );
+        return;
+      }
+      const existingItemIndex = state.items.findIndex(
+        (item) => item.id === action.payload.id
+      );
+
+      if (existingItemIndex >= 0) {
+        state.items[existingItemIndex].quantity += 1;
+      } else {
+        state.items.push(action.payload);
       }
     },
 
@@ -55,7 +56,6 @@ export const cartSlice = createSlice({
         );
       }
 
-      // Optional: Reset shopId when cart is empty
       if (state.items.length === 0) {
         state.shopId = null;
       }
@@ -65,13 +65,20 @@ export const cartSlice = createSlice({
 
 export const { addToCart, removeFromCart } = cartSlice.actions;
 
-// Selectors
-export const selectCartItems = (state: { cart: CartState }) => state.cart.items;
+export interface RootState {
+  cart: CartState;
+}
 
-export const selectCartItemsWithId = (state: { cart: CartState }, id: string) =>
-  state.cart.items.filter((item) => item.id === id);
+export const selectCartItems = (state: RootState): CartItem[] =>
+  state.cart.items;
 
-export const selectCartTotal = (state: { cart: CartState }) =>
-  state.cart.items.reduce((total, item) => total + item.price, 0);
+export const selectCartItemById = (state: RootState, id: string) =>
+  state.cart.items.find((item) => item.id === id);
+
+export const selectCartTotal = (state: RootState): number =>
+  state.cart.items.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
 
 export default cartSlice.reducer;

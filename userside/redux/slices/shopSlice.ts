@@ -9,20 +9,23 @@ const initialState: ShopState = {
   error: null,
 };
 
-export const fetchShops = createAsyncThunk("shop/fetchShops", async () => {
-  const shopsData = (await fetchData("shops")) as any[];
-  const typedShops: Shop[] = shopsData.map((shop) => ({
-    id: shop.id,
-    name: shop.name || "",
-    image: shop.image || "",
-    rating: Number(shop.rating) || 0,
-    address: shop.address || "",
-    genre: Array.isArray(shop.genre) ? shop.genre : [],
-    lat: Number(shop.lat) || 0,
-    lng: Number(shop.lng) || 0,
-  }));
-  return typedShops;
-});
+export const fetchShops = createAsyncThunk<Shop[]>(
+  "shop/fetchShops",
+  async () => {
+    const shopsData = (await fetchData("shops")) as any[];
+    const typedShops: Shop[] = shopsData.map((shop) => ({
+      id: shop.id,
+      name: shop.name || "",
+      image: shop.image || "",
+      rating: Number(shop.rating) || 0,
+      address: shop.address || "",
+      genre: Array.isArray(shop.genre) ? shop.genre : [],
+      lat: Number(shop.lat) || 0,
+      lng: Number(shop.lng) || 0,
+    }));
+    return typedShops;
+  }
+);
 
 const shopSlice = createSlice({
   name: "shop",

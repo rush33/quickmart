@@ -18,7 +18,7 @@ import ItemRow from "@/components/ItemRow";
 import CartButton from "@/components/CartButton";
 import { ShopDetailsCard } from "@/components/ShopDetailsCard";
 
-export default function ShopDetails() {
+const ShopDetails = () => {
   const { id } = useLocalSearchParams();
   const shopId = Array.isArray(id) ? id[0] : id;
   const dispatch = useDispatch<AppDispatch>();
@@ -69,4 +69,6 @@ export default function ShopDetails() {
       {cartItems.length > 0 && <CartButton />}
     </SafeAreaView>
   );
-}
+};
+
+export default ShopDetails;

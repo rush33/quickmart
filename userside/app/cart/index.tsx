@@ -14,14 +14,49 @@ import {
 } from "@/redux/slices/cartSlice";
 import { Ionicons } from "@expo/vector-icons";
 import { CartItem } from "@/types/cartItem";
+import { placeOrder } from "@/utils/firebaseConfig";
+import { orderStatuses } from "@/constants/orderStatus";
+import { getUserData } from "@/utils/userData";
+import { router } from "expo-router";
 
 export default function CartScreen() {
   const items = useSelector(selectCartItems);
   const total = useSelector(selectCartTotal);
   const dispatch = useDispatch();
 
-  const handleRemove = (id: string) => {
-    dispatch(removeFromCart({ id }));
+  const handleOrder = async () => {
+    try {
+      const user = await getUserData();
+      if (!user) throw new Error("User data not found");
+
+      if (!items?.length) throw new Error("No items in cart");
+
+      const shopId = items[0]?.shopId;
+      if (!shopId) throw new Error("Shop ID missing from cart items");
+
+      const orderPayload = {
+        userId: user.userId,
+        address: "Jorehaut", // TODO: Replace with dynamic address if needed
+        items,
+        shopId,
+        status: orderStatuses.pending,
+        totalAmount: total,
+        userCoords: {
+          latitude: 10,
+          longitude: 1199, // TODO: Use real geolocation here
+        },
+      };
+
+      console.log("📝 Order Payload:", orderPayload);
+
+      await placeOrder(orderPayload);
+
+      console.log("✅ Order placed successfully");
+      // TODO: Show UI feedback, reset cart, navigate, etc.
+    } catch (err) {
+      console.error("❌ Order placement failed:", err.message || err);
+      // TODO: Display error toast or message to user
+    }
   };
 
   const renderItem = ({ item }: { item: CartItem }) => (
@@ -41,7 +76,9 @@ export default function CartScreen() {
           ₹{(item.price * item.quantity).toFixed(2)}
         </Text>
       </View>
-      <TouchableOpacity onPress={() => handleRemove(item.id)}>
+      <TouchableOpacity
+        onPress={() => dispatch(removeFromCart({ id: item.id }))}
+      >
         <Ionicons name="trash-outline" size={24} color="red" />
       </TouchableOpacity>
     </View>
@@ -68,14 +105,16 @@ export default function CartScreen() {
         />
       )}
 
-      {/* Footer with Checkout */}
       {items.length > 0 && (
         <View className="absolute mb-6 bottom-0 w-full bg-white border-t border-gray-200 p-4">
           <View className="flex-row justify-between mb-4">
             <Text className="text-lg font-semibold">Subtotal</Text>
             <Text className="text-lg font-semibold">₹{total.toFixed(2)}</Text>
           </View>
-          <TouchableOpacity className="bg-blue-600 py-4 rounded-xl items-center">
+          <TouchableOpacity
+            className="bg-blue-600 py-4 rounded-xl items-center"
+            onPress={handleOrder}
+          >
             <Text className="text-white text-lg font-semibold">
               Place Order
             </Text>

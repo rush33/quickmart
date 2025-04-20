@@ -1,8 +1,17 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, query, QueryConstraint } from "firebase/firestore";
+import {
+  addDoc,
+  getFirestore,
+  query,
+  QueryConstraint,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
 import { initializeAuth, getReactNativePersistence } from "firebase/auth";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { collection, getDocs } from "firebase/firestore";
+import { Order } from "@/types/order";
+import { router } from "expo-router";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDBrids-pfaLIl6two1mxlHHMHaqDf58Gk",
@@ -29,7 +38,6 @@ export const fetchData = async (collectionName: string) => {
       id: doc.id,
       ...doc.data(),
     }));
-    // console.log("Firestore Data:", data);
     return data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -54,6 +62,34 @@ export const fetchFilteredData = async (
     return data;
   } catch (error) {
     console.error("Error fetching filtered data:", error);
+    throw error;
+  }
+};
+
+export const placeOrder = async (
+  order: Omit<Order, "orderId" | "createdAt">
+) => {
+  try {
+    const orderWithTimestamp = {
+      ...order,
+      createdAt: serverTimestamp(),
+    };
+
+    const docRef = await addDoc(collection(db, "orders"), orderWithTimestamp);
+
+    await updateDoc(docRef, {
+      orderId: docRef.id,
+    });
+
+    console.log("✅ Order placed successfully with ID:", docRef.id);
+    router.navigate(`/orders/${docRef.id}`);
+
+    return {
+      ...orderWithTimestamp,
+      orderId: docRef.id,
+    };
+  } catch (error) {
+    console.error("Error placing order:", error);
     throw error;
   }
 };

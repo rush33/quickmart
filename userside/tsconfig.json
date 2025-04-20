@@ -3,6 +3,7 @@
   "compilerOptions": {
     "strict": true,
     "useUnknownInCatchVariables": false,
+    "jsx": "react-native",
     "paths": {
       "@/*": ["./*"],
       "@firebase/auth": ["./node_modules/@firebase/auth/dist/index.rn.d.ts"]

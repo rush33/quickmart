@@ -1,4 +1,5 @@
 import { auth, db } from "@/utils/firebaseConfig";
+import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -60,11 +61,14 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
       );
       console.log("User created successfully:", response.user.uid);
 
-      await setDoc(doc(db, "users", response.user.uid), {
+      const userData = {
         email,
         userId: response.user.uid,
         fname,
-      });
+      };
+
+      await setDoc(doc(db, "users", response.user.uid), userData);
+      await ReactNativeAsyncStorage.setItem("userData", JSON.stringify(userData));
 
       console.log("User data saved to Firestore:", {
         email,
@@ -89,7 +93,15 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 
   const SignIn = async (email: string, password: string) => {
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const res = await signInWithEmailAndPassword(auth, email, password);
+      const userRef = doc(db, "users", res.user.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (userSnap.exists()) {
+        const userData = userSnap.data();
+        await ReactNativeAsyncStorage.setItem("userData", JSON.stringify(userData));
+      }
+
       return { success: true };
     } catch (error) {
       let msg = error.message;

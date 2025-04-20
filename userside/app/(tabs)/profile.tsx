@@ -11,6 +11,7 @@ import { useRouter } from "expo-router";
 import { signOut } from "firebase/auth";
 import { auth } from "@/utils/firebaseConfig";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 
 type QuickActionProps = {
   icon: keyof typeof MaterialIcons.glyphMap;
@@ -32,6 +33,7 @@ export default function Profile(): JSX.Element {
 
   const handleLogout = async (): Promise<void> => {
     await signOut(auth);
+    await ReactNativeAsyncStorage.removeItem("userData");
     router.push("/(auth)/Onboarding");
   };
 

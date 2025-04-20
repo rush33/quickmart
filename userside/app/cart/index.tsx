@@ -77,7 +77,7 @@ export default function CartScreen() {
           </View>
           <TouchableOpacity className="bg-blue-600 py-4 rounded-xl items-center">
             <Text className="text-white text-lg font-semibold">
-              Proceed to Checkout
+              Place Order
             </Text>
           </TouchableOpacity>
         </View>

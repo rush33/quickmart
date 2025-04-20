@@ -9,9 +9,7 @@ import {
 import Header from "../../components/Header";
 import ShopCard from "../../components/ShopCard";
 import "../../global.css";
-import { useEffect, useState } from "react";
-import { fetchData } from "../../utils/firebaseConfig";
-import { Shop } from "@/types/shop";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import { fetchShops } from "@/redux/slices/shopSlice";
@@ -30,8 +28,7 @@ export default function Index() {
   }, [dispatch]);
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
-      <StatusBar barStyle="default" />
+    <View className="flex-1 bg-white">
       <Header />
 
       {/* Main Content */}
@@ -67,6 +64,6 @@ export default function Index() {
           </View>
         }
       />
-    </SafeAreaView>
+    </View>
   );
 }

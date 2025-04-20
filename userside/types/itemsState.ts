@@ -1,7 +1,7 @@
-import { item } from "./item";
+import { Item } from "./item";
 
 export interface ItemsState {
-  data: item[];
+  data: Item[];
   loading: boolean;
   error: string | null;
 }

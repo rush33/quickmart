@@ -1,4 +1,4 @@
-import { item } from "@/types/item";
+import { Item } from "@/types/item";
 import { ItemsState } from "@/types/itemsState";
 import { fetchFilteredData } from "@/utils/firebaseConfig";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
@@ -10,7 +10,7 @@ const initialState: ItemsState = {
   error: null,
 };
 
-export const fetchItemsByShopId = createAsyncThunk<item[], string>(
+export const fetchItemsByShopId = createAsyncThunk<Item[], string>(
   "items/fetchByShopId",
   async (shopId, { rejectWithValue }) => {
     try {
@@ -18,7 +18,7 @@ export const fetchItemsByShopId = createAsyncThunk<item[], string>(
         where("shopId", "==", shopId),
       ]);
 
-      const typedItems: item[] = itemsData.map((doc: any) => ({
+      const typedItems: Item[] = itemsData.map((doc: any) => ({
         itemId: doc.itemId,
         amount: doc.amount,
         description: doc.description,

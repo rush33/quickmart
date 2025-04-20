@@ -1,5 +1,5 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
-import { item } from "@/types/item";
+import { Item } from "@/types/item";
 import { CartItem } from "@/types/cartItem";
 import {
   addToCart,
@@ -11,7 +11,7 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { MaterialIcons } from "@expo/vector-icons";
 
 type Props = {
-  item: item;
+  item: Item;
 };
 
 export default function ItemRow({ item }: Props) {

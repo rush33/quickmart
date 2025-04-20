@@ -1,5 +1,5 @@
-export type item = {
-  itemId: string,
+export type Item = {
+  itemId: string;
   amount: number;
   description: string;
   image: string;

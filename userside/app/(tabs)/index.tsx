@@ -1,11 +1,4 @@
-import {
-  SafeAreaView,
-  StatusBar,
-  View,
-  Text,
-  Image,
-  FlatList,
-} from "react-native";
+import { View, Text, Image, FlatList } from "react-native";
 import Header from "../../components/Header";
 import ShopCard from "../../components/ShopCard";
 import "../../global.css";
@@ -57,11 +50,15 @@ export default function Index() {
           </View>
         )}
         ListFooterComponent={
-          <View className="px-4">
-            {shopData.map((shop) => (
-              <ShopCard key={shop.id} shop={shop} />
-            ))}
-          </View>
+          loading ? (
+            <Text>Loading...</Text>
+          ) : (
+            <View className="px-4">
+              {shopData.map((shop) => (
+                <ShopCard key={shop.id} shop={shop} />
+              ))}
+            </View>
+          )
         }
       />
     </View>

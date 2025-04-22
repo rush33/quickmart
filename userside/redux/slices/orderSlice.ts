@@ -20,10 +20,12 @@ const initialState: orderState = {
 export const fetchOrders = createAsyncThunk<Order[]>(
   "order/fetchOrders",
   async () => {
+    console.log("function called");
     const orders = (await fetchData("orders")) as any[];
     const typedOrders: Order[] = orders.map((order) => ({
       ...order,
     }));
+    console.log("typed orders from slice:", typedOrders);
     return typedOrders;
   }
 );
@@ -34,7 +36,6 @@ export const placeOrder = createAsyncThunk<
   { rejectValue: string }
 >("order/placeOrder", async (orderData, { rejectWithValue }) => {
   try {
-    // Send with serverTimestamp (not for redux)
     const orderWithTimestamp = {
       ...orderData,
       createdAt: serverTimestamp(),
@@ -46,8 +47,6 @@ export const placeOrder = createAsyncThunk<
       orderId: docRef.id,
     });
 
-    // 🧠 Fetch the full document back (now with actual server timestamp)
-    // const docSnap = await docRef.get();
     const docSnap = await getDoc(docRef);
     const data = docSnap.data();
 

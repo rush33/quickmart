@@ -1,23 +1,33 @@
-import { View, Text, ScrollView, Pressable } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import React, { useEffect } from "react";
-import { Order } from "@/types/order";
+import OrderCard from "../../components/OrderCard";
+import { AppDispatch, RootState } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchOrders } from "@/redux/slices/orderSlice";
 
 const MyOrders = () => {
-  useEffect(() => {}, []);
+  const dispatch = useDispatch<AppDispatch>();
+  const { data, loading } = useSelector((state: RootState) => state.order);
 
-  return (
-    <View className="bg-white">
+  useEffect(() => {
+    dispatch(fetchOrders());
+  }, [dispatch]);
+
+  return loading ? (
+    <View>
+      <Text>Loading...</Text>
+    </View>
+  ) : (
+    <View className="bg-white flex-1">
       <View className="p-2 bg-white shadow-xs">
-        <View>
-          <Text className="text-xl font-bold text-center">My Orders</Text>
-        </View>
+        <Text className="text-xl font-bold text-center">My Orders</Text>
       </View>
 
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
         <View className="mb-20">
-          <OrderCard />
-          <OrderCard />
-          <OrderCard />
+          {data.map((order) => (
+            <OrderCard key={order.orderId} order={order} />
+          ))}
         </View>
       </ScrollView>
     </View>
@@ -25,44 +35,3 @@ const MyOrders = () => {
 };
 
 export default MyOrders;
-
-const OrderCard = () => {
-  const formattedDate = "20 Apr, 2025 08:30 PM";
-  const statusText = "Delivered ✅";
-  const statusColor = "text-green-500";
-
-  return (
-    <View className="flex items-center justify-center">
-      <Pressable className="px-6 py-6 mt-4 bg-white w-11/12 h-auto rounded-2xl flex-row justify-between items-center border border-gray-100 shadow shadow-gray-300">
-        <View className="w-full">
-          <Text className={`font-bold text-2xl ${statusColor}`}>
-            {statusText}
-          </Text>
-          <Text className="text-sm pt-1 text-gray-700">{formattedDate}</Text>
-          <Text className="text-sm pt-1 text-gray-700">Order ID #12345678</Text>
-
-          <View className="mt-3">
-            <Text className="text-gray-800 font-semibold">× 2 Butter Naan</Text>
-            <Text className="text-gray-800 font-semibold">
-              × 1 Chicken Curry
-            </Text>
-          </View>
-
-          <View className="flex-row justify-between mt-4">
-            <Text className="font-semibold text-lg text-gray-700">
-              Order Total:
-            </Text>
-            <Text className="font-semibold text-lg text-gray-700">Rs. 480</Text>
-          </View>
-
-          <View className="flex-row justify-between">
-            <Text className="font-semibold text-lg text-gray-700">From:</Text>
-            <Text className="font-semibold text-lg text-gray-700">
-              Spice Garden
-            </Text>
-          </View>
-        </View>
-      </Pressable>
-    </View>
-  );
-};

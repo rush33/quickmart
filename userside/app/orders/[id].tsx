@@ -119,7 +119,7 @@ const OrderDetails = () => {
       </View>
 
       <TouchableOpacity
-        onPress={() => router.navigate("/(tabs)")}
+        onPress={() => router.navigate("/(tabs)/myOrders")}
         className="absolute bottom-6 left-6 right-6 bg-white p-4 rounded-xl shadow-sm flex-row items-center justify-center"
       >
         <Ionicons name="arrow-back" size={20} color="#000" />

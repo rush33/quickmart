@@ -1,7 +1,7 @@
+import "../../global.css";
 import { View, Text, Image, FlatList } from "react-native";
 import Header from "../../components/Header";
 import ShopCard from "../../components/ShopCard";
-import "../../global.css";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
@@ -33,13 +33,13 @@ export default function Index() {
             <Text className="text-lg font-bold mb-2">{item.title}</Text>
             <FlatList
               data={item.items}
-              numColumns={3}
+              numColumns={4}
               keyExtractor={(subItem, idx) => `${item.title}-${idx}`}
               renderItem={({ item: subItem }) => (
-                <View className="w-1/3 p-2 items-center">
+                <View className="w-1/4 p-2 items-center">
                   <Image
                     source={{ uri: subItem.image }}
-                    className="w-24 h-24 rounded-lg"
+                    className="w-16 h-16 rounded-md"
                   />
                   <Text className="text-xs text-center mt-1">
                     {subItem.name}

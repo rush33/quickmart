@@ -47,7 +47,7 @@ const OrderCard = ({ order }: { order: Order }) => {
           <View className="flex-row justify-between">
             <Text className="font-semibold text-lg text-gray-700">From:</Text>
             <Text className="font-semibold text-lg text-gray-700">
-              {order.shopId ?? "Unknown Shop"}
+              {order.shopName ?? "Unknown Shop"}
             </Text>
           </View>
         </View>

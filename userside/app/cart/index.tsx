@@ -17,28 +17,31 @@ import { CartItem } from "@/types/cartItem";
 import { placeOrder } from "../../redux/slices/orderSlice";
 import { orderStatuses } from "@/constants/orderStatus";
 import { getUserData } from "@/utils/userData";
-import { router } from "expo-router";
-import { AppDispatch } from "@/redux/store";
+import { AppDispatch, RootState } from "@/redux/store";
+import { Order } from "@/types/order";
 
 export default function CartScreen() {
   const items = useSelector(selectCartItems);
   const total = useSelector(selectCartTotal);
   const dispatch = useDispatch<AppDispatch>();
+  const shopId = items[0]?.shopId;
+  const shop = useSelector((state: RootState) =>
+    state.shop.data.find((s) => s.id === shopId)
+  );
 
   const handleOrder = async () => {
     try {
       const user = await getUserData();
       if (!user) throw new Error("User data not found");
       if (!items?.length) throw new Error("No items in cart");
-
-      const shopId = items[0]?.shopId;
       if (!shopId) throw new Error("Shop ID missing from cart items");
 
       const orderPayload = {
         userId: user.userId,
         address: "Jorehaut",
-        items,
-        shopId,
+        items: items,
+        shopId: shopId,
+        shopName: shop?.name || "",
         status: orderStatuses.pending,
         totalAmount: total,
         userCoords: {

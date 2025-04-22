@@ -9,6 +9,7 @@ export type Order = {
   createdAt?: Date | FieldValue;
   items: CartItem[];
   shopId: string;
+  shopName: string;
   status: string;
   totalAmount: number;
   userId: string;

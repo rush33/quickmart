@@ -14,21 +14,21 @@ import {
 } from "@/redux/slices/cartSlice";
 import { Ionicons } from "@expo/vector-icons";
 import { CartItem } from "@/types/cartItem";
-import { placeOrder } from "@/utils/firebaseConfig";
+import { placeOrder } from "../../redux/slices/orderSlice";
 import { orderStatuses } from "@/constants/orderStatus";
 import { getUserData } from "@/utils/userData";
 import { router } from "expo-router";
+import { AppDispatch } from "@/redux/store";
 
 export default function CartScreen() {
   const items = useSelector(selectCartItems);
   const total = useSelector(selectCartTotal);
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const handleOrder = async () => {
     try {
       const user = await getUserData();
       if (!user) throw new Error("User data not found");
-
       if (!items?.length) throw new Error("No items in cart");
 
       const shopId = items[0]?.shopId;
@@ -36,26 +36,25 @@ export default function CartScreen() {
 
       const orderPayload = {
         userId: user.userId,
-        address: "Jorehaut", // TODO: Replace with dynamic address if needed
+        address: "Jorehaut",
         items,
         shopId,
         status: orderStatuses.pending,
         totalAmount: total,
         userCoords: {
           latitude: 10,
-          longitude: 1199, // TODO: Use real geolocation here
+          longitude: 1199,
         },
       };
 
       console.log("📝 Order Payload:", orderPayload);
 
-      await placeOrder(orderPayload);
+      await dispatch(placeOrder(orderPayload));
 
       console.log("✅ Order placed successfully");
-      // TODO: Show UI feedback, reset cart, navigate, etc.
-    } catch (err) {
+      // TODO: reset cart, show success UI, etc.
+    } catch (err: any) {
       console.error("❌ Order placement failed:", err.message || err);
-      // TODO: Display error toast or message to user
     }
   };
 

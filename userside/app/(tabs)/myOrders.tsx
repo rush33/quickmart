@@ -1,20 +1,23 @@
 import { View, Text, ScrollView } from "react-native";
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import OrderCard from "../../components/OrderCard";
 import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOrders } from "@/redux/slices/orderSlice";
+import { useFocusEffect } from "expo-router";
 
 const MyOrders = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { data, loading } = useSelector((state: RootState) => state.order);
 
-  useEffect(() => {
-    dispatch(fetchOrders());
-  }, [dispatch]);
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(fetchOrders());
+    }, [dispatch])
+  );
 
   return loading ? (
-    <View>
+    <View className="bg-white flex-1">
       <Text>Loading...</Text>
     </View>
   ) : (

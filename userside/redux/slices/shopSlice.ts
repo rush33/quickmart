@@ -1,6 +1,6 @@
 import { Shop } from "@/types/shop";
 import { ShopState } from "@/types/shopState";
-import { fetchData } from "@/utils/firebaseConfig";
+import { fetchData } from "@/utils/firebase";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 const initialState: ShopState = {

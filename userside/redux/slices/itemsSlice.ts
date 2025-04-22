@@ -1,6 +1,6 @@
 import { Item } from "@/types/item";
 import { ItemsState } from "@/types/itemsState";
-import { fetchFilteredData } from "@/utils/firebaseConfig";
+import { fetchFilteredData } from "@/utils/firebase";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { where } from "firebase/firestore";
 

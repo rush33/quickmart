@@ -9,7 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import { auth } from "../../utils/firebaseConfig";
+import { auth } from "../../utils/firebase";
 import { useRouter } from "expo-router";
 import { useAuth } from "@/context/AuthContext";
 import React from "react";

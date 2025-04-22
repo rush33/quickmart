@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { FlatList, Image, Text, View, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
-import { fetchFilteredData } from "@/utils/firebaseConfig";
+import { fetchFilteredData } from "@/utils/firebase";
 import { where } from "firebase/firestore";
 import { Order } from "@/types/order";
 import { CartItem } from "@/types/cartItem";

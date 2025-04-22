@@ -1,4 +1,4 @@
-import { auth, db } from "@/utils/firebaseConfig";
+import { auth, db } from "@/utils/firebase";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import {
   createUserWithEmailAndPassword,
@@ -68,7 +68,10 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
       };
 
       await setDoc(doc(db, "users", response.user.uid), userData);
-      await ReactNativeAsyncStorage.setItem("userData", JSON.stringify(userData));
+      await ReactNativeAsyncStorage.setItem(
+        "userData",
+        JSON.stringify(userData)
+      );
 
       console.log("User data saved to Firestore:", {
         email,
@@ -99,7 +102,10 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 
       if (userSnap.exists()) {
         const userData = userSnap.data();
-        await ReactNativeAsyncStorage.setItem("userData", JSON.stringify(userData));
+        await ReactNativeAsyncStorage.setItem(
+          "userData",
+          JSON.stringify(userData)
+        );
       }
 
       return { success: true };

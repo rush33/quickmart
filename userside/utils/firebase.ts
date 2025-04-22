@@ -66,30 +66,30 @@ export const fetchFilteredData = async (
   }
 };
 
-export const placeOrder = async (
-  order: Omit<Order, "orderId" | "createdAt">
-) => {
-  try {
-    const orderWithTimestamp = {
-      ...order,
-      createdAt: serverTimestamp(),
-    };
+// export const placeOrder = async (
+//   order: Omit<Order, "orderId" | "createdAt"> 
+// ) => {
+//   try {
+//     const orderWithTimestamp = {
+//       ...order,
+//       createdAt: serverTimestamp(),
+//     };
 
-    const docRef = await addDoc(collection(db, "orders"), orderWithTimestamp);
+//     const docRef = await addDoc(collection(db, "orders"), orderWithTimestamp);
 
-    await updateDoc(docRef, {
-      orderId: docRef.id,
-    });
+//     await updateDoc(docRef, {
+//       orderId: docRef.id,
+//     });
 
-    console.log("✅ Order placed successfully with ID:", docRef.id);
-    router.navigate(`/orders/${docRef.id}`);
+//     console.log("✅ Order placed successfully with ID:", docRef.id);
+//     router.navigate(`/orders/${docRef.id}`);
 
-    return {
-      ...orderWithTimestamp,
-      orderId: docRef.id,
-    };
-  } catch (error) {
-    console.error("Error placing order:", error);
-    throw error;
-  }
-};
+//     return {
+//       ...orderWithTimestamp,
+//       orderId: docRef.id,
+//     };
+//   } catch (error) {
+//     console.error("Error placing order:", error);
+//     throw error;
+//   }
+// };

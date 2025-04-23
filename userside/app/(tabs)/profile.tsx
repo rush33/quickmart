@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, SafeAreaView, TouchableOpacity } from "react-native";
 import { signOut } from "firebase/auth";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { auth } from "@/utils/firebase";
 import { getUserData } from "@/utils/userData";
@@ -20,7 +20,7 @@ export default function Profile(): JSX.Element {
 
   const handleLogout = async (): Promise<void> => {
     await signOut(auth);
-    await AsyncStorage.removeItem("userData");
+    await ReactNativeAsyncStorage.removeItem("userData");
     router.replace("/(auth)/Login"); // Navigate to login or onboarding screen
   };
 

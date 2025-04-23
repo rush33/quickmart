@@ -1,8 +1,18 @@
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import React from "react";
-import { View, Text, TextInput, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 
-const Header = () => {
+type HeaderProps = {
+  address: string;
+  onPressLocation: () => void;
+};
+
+const Header = ({ address, onPressLocation }: HeaderProps) => {
   return (
     <View style={{ padding: 16, gap: 8 }}>
       <View
@@ -12,17 +22,18 @@ const Header = () => {
           justifyContent: "space-between",
         }}
       >
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+        <TouchableOpacity
+          style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
+          onPress={onPressLocation}
+        >
           <MaterialIcons name="location-on" size={24} color="#FF4D00" />
           <View>
-            <Text style={{ fontSize: 18, fontWeight: "600" }}>
-              Jorhat Main Market
-            </Text>
+            <Text style={{ fontSize: 18, fontWeight: "600" }}>{address}</Text>
             <Text style={{ color: "#666" }}>
-              Atilagaon, Jorhat, Assam 785001, India
+              Tap to change location
             </Text>
           </View>
-        </View>
+        </TouchableOpacity>
       </View>
 
       {/* Search Bar */}
@@ -47,40 +58,3 @@ const Header = () => {
 };
 
 export default Header;
-
-// Tailwind CSS
-// import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-// import React from "react";
-// import { View, Text, TextInput, TouchableOpacity } from "react-native";
-
-// const Header = () => {
-//   return (
-//     <View className="p-4 space-y-2">
-//       <View className="flex-row items-center justify-between">
-//         <View className="flex-row items-center space-x-2">
-//           <MaterialIcons name="location-on" size={24} color="#FF4D00" />
-//           <View>
-//             <Text className="text-base font-semibold">Podum Nagar 2</Text>
-//             <Text className="text-gray-500">
-//               Podum Nagar 2, Dibrugarh, Assam 786622, India
-//             </Text>
-//           </View>
-//         </View>
-//       </View>
-
-//       {/* Search Bar */}
-//       <View className="flex-row items-center bg-gray-200 p-3 rounded-lg space-x-2">
-//         <Ionicons name="search" size={20} color="#666" />
-//         <TextInput
-//           placeholder="Search for 'Cake'"
-//           className="flex-1 text-sm text-black"
-//         />
-//         <TouchableOpacity>
-//           <Ionicons name="mic" size={20} color="#FF4D00" />
-//         </TouchableOpacity>
-//       </View>
-//     </View>
-//   );
-// };
-
-// export default Header;

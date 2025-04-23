@@ -35,6 +35,13 @@ export default function CartScreen() {
       if (!user) throw new Error("User data not found");
       if (!items?.length) throw new Error("No items in cart");
       if (!shopId) throw new Error("Shop ID missing from cart items");
+      if (
+        !user.coords ||
+        user.coords.latitude == null ||
+        user.coords.longitude == null
+      ) {
+        throw new Error("User coordinates are missing");
+      }
 
       const orderPayload = {
         userId: user.userId,
@@ -45,8 +52,8 @@ export default function CartScreen() {
         status: orderStatuses.pending,
         totalAmount: total,
         userCoords: {
-          latitude: 10,
-          longitude: 1199,
+          latitude: user.coords.latitude,
+          longitude: user.coords.longitude,
         },
       };
 

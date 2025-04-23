@@ -1,7 +1,7 @@
 import { FieldValue } from "firebase/firestore";
 import { CartItem } from "./cartItem";
 
-type Coordinates = { latitude: number; longitude: number };
+export type Coordinates = { latitude: number; longitude: number };
 
 export type Order = {
   orderId?: string;

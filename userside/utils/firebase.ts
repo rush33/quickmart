@@ -1,17 +1,14 @@
 import { initializeApp } from "firebase/app";
 import {
-  addDoc,
+  doc,
   getFirestore,
   query,
   QueryConstraint,
-  serverTimestamp,
   updateDoc,
 } from "firebase/firestore";
 import { initializeAuth, getReactNativePersistence } from "firebase/auth";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { collection, getDocs } from "firebase/firestore";
-import { Order } from "@/types/order";
-import { router } from "expo-router";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDBrids-pfaLIl6two1mxlHHMHaqDf58Gk",
@@ -66,30 +63,17 @@ export const fetchFilteredData = async (
   }
 };
 
-// export const placeOrder = async (
-//   order: Omit<Order, "orderId" | "createdAt"> 
-// ) => {
-//   try {
-//     const orderWithTimestamp = {
-//       ...order,
-//       createdAt: serverTimestamp(),
-//     };
-
-//     const docRef = await addDoc(collection(db, "orders"), orderWithTimestamp);
-
-//     await updateDoc(docRef, {
-//       orderId: docRef.id,
-//     });
-
-//     console.log("✅ Order placed successfully with ID:", docRef.id);
-//     router.navigate(`/orders/${docRef.id}`);
-
-//     return {
-//       ...orderWithTimestamp,
-//       orderId: docRef.id,
-//     };
-//   } catch (error) {
-//     console.error("Error placing order:", error);
-//     throw error;
-//   }
-// };
+export const updateData = async (
+  collectionName: string,
+  docId: string,
+  data: Record<string, any>
+): Promise<void> => {
+  try {
+    const docRef = doc(db, collectionName, docId);
+    await updateDoc(docRef, data);
+    console.log("Document updated successfully");
+  } catch (error) {
+    console.error("Error updating document:", error);
+    throw error;
+  }
+};

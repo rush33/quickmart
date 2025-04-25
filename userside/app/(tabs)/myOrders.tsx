@@ -28,9 +28,13 @@ const MyOrders = () => {
 
       <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
         <View className="mb-20">
-          {data.map((order) => (
-            <OrderCard key={order.orderId} order={order} />
-          ))}
+          {data.length === 0 ? (
+            <View className="flex-1 items-center justify-center mt-10">
+              <Text className="text-gray-500 text-lg">No orders yet</Text>
+            </View>
+          ) : (
+            data.map((order) => <OrderCard key={order.orderId} order={order} />)
+          )}
         </View>
       </ScrollView>
     </View>

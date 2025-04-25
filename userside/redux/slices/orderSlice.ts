@@ -20,12 +20,10 @@ const initialState: orderState = {
 export const fetchOrders = createAsyncThunk<Order[]>(
   "order/fetchOrders",
   async () => {
-    console.log("function called");
     const orders = (await fetchData("orders")) as any[];
     const typedOrders: Order[] = orders.map((order) => ({
       ...order,
     }));
-    console.log("typed orders from slice:", typedOrders);
     return typedOrders;
   }
 );

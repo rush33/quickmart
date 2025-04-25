@@ -2,6 +2,7 @@ import { User } from "@/types/user";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 
 export const getUserData = async (): Promise<User | null> => {
+  console.log("get userData called");
   const jsonValue = await ReactNativeAsyncStorage.getItem("userData");
   if (jsonValue != null) {
     const userData = JSON.parse(jsonValue);

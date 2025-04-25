@@ -5,4 +5,6 @@ export type User = {
   fname: string;
   email: string;
   coords?: Coordinates;
+  address: string;
+  phoneNumber: string;
 };

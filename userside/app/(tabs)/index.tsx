@@ -1,6 +1,14 @@
 import "../../global.css";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
-import { View, Text, FlatList, Alert } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  Alert,
+  Image,
+  TouchableOpacity,
+  TextInput,
+} from "react-native";
 import Header from "../../components/Header";
 import ShopCard from "../../components/ShopCard";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -12,34 +20,43 @@ import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import * as Location from "expo-location";
 import { getUserData } from "@/utils/userData";
+import { User } from "@/types/user";
+import { useAuth } from "@/context/AuthContext";
+import PrimaryButton from "@/components/PrimaryButton";
 
 export default function Index() {
+  const { updateUserData } = useAuth();
   const dispatch = useDispatch<AppDispatch>();
-  const {
-    data: shopData,
-    loading,
-    error,
-  } = useSelector((state: RootState) => state.shop);
+  const { data: shopData, loading } = useSelector(
+    (state: RootState) => state.shop
+  );
 
   const [selectedAddress, setSelectedAddress] = useState(
     "Fetching location..."
   );
+  const [userData, setUserData] = useState<User | null>(null);
+  const [newAddress, setNewAddress] = useState("");
+  const [number, setNumber] = useState("");
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = useMemo(() => ["20%"], []);
+  const snapPoints = useMemo(() => ["40%"], []);
 
   useEffect(() => {
-    dispatch(fetchShops());
-    getLocationAsync();
+    const initialize = async () => {
+      const user = await getUserData();
+      setUserData(user);
+      dispatch(fetchShops());
+      getLocationAsync(user);
+      if (!user?.address || !user?.phoneNumber) {
+        setTimeout(() => bottomSheetRef.current?.expand(), 500);
+      }
+    };
+
+    initialize();
   }, [dispatch]);
 
   const openBottomSheet = () => bottomSheetRef.current?.expand();
 
-  // const handleAddressSelect = (address: string) => {
-  //   setSelectedAddress(address);
-  //   bottomSheetRef.current?.close();
-  // };
-
-  const getLocationAsync = async () => {
+  const getLocationAsync = async (currentUser: User | null) => {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
@@ -53,50 +70,85 @@ export default function Index() {
         longitude: location.coords.longitude,
       });
 
+      setSelectedAddress(`${addressObj.city}`);
       console.log(
-        "lat, long",
+        "updated",
+        addressObj.city,
         location.coords.latitude,
         location.coords.longitude
       );
 
-      // const addressString = `${addressObj.city}`;
-      setSelectedAddress(`${addressObj.city}`);
-      const userData = await getUserData();
-      const updatedUserData = {
-        ...userData,
-        coords: {
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-        },
-      };
-      await ReactNativeAsyncStorage.setItem(
-        "userData",
-        JSON.stringify(updatedUserData)
-      );
+      // const updatedUserData: User = {
+      //   ...userData,
+      //   coords: {
+      //     latitude: location.coords.latitude,
+      //     longitude: location.coords.longitude,
+      //   },
+      // };
+
+      // console.log("updated userdata", updatedUserData);
+      // setUserData(updatedUserData);
+      // await ReactNativeAsyncStorage.setItem(
+      //   "userData",
+      //   JSON.stringify(updatedUserData)
+      // );
+      // console.log("userdata state", userData);
     } catch (err) {
       console.error("Error getting location:", err);
       setSelectedAddress("Unable to get location");
     }
   };
 
+  const handleSave = async () => {
+    if (newAddress.trim() === "") return;
+    const updatedUserData: User = {
+      ...((userData ?? {}) as User),
+      address: newAddress.trim(),
+      phoneNumber: number.trim(),
+    };
+    // await ReactNativeAsyncStorage.setItem(
+    //   "userData",
+    //   JSON.stringify(updatedUserData)
+    // );
+    console.log("userdata", updatedUserData);
+    await updateUserData(updatedUserData);
+    bottomSheetRef.current?.close();
+  };
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <View className="flex-1 bg-white">
+      <View style={{ flex: 1, backgroundColor: "white" }}>
         <Header address={selectedAddress} onPressLocation={openBottomSheet} />
 
         <FlatList
           data={[...categories]}
           keyExtractor={(item, index) => `category-${index}`}
           renderItem={({ item }) => (
-            <View className="mb-4 px-4">
-              <Text className="text-lg font-bold mb-2">{item.title}</Text>
+            <View style={{ marginBottom: 16, paddingHorizontal: 16 }}>
+              <Text
+                style={{ fontSize: 18, fontWeight: "bold", marginBottom: 8 }}
+              >
+                {item.title}
+              </Text>
               <FlatList
                 data={item.items}
                 numColumns={4}
                 keyExtractor={(subItem, idx) => `${item.title}-${idx}`}
                 renderItem={({ item: subItem }) => (
-                  <View className="w-1/4 p-2 items-center">
-                    <Text className="text-xs text-center mt-1">
+                  <View
+                    style={{ width: "25%", padding: 8, alignItems: "center" }}
+                  >
+                    <Image
+                      source={{ uri: subItem.image }}
+                      style={{ width: 64, height: 64, borderRadius: 8 }}
+                    />
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        textAlign: "center",
+                        marginTop: 4,
+                      }}
+                    >
                       {subItem.name}
                     </Text>
                   </View>
@@ -108,7 +160,7 @@ export default function Index() {
             loading ? (
               <Text>Loading...</Text>
             ) : (
-              <View className="px-4">
+              <View style={{ paddingHorizontal: 16 }}>
                 {shopData.map((shop) => (
                   <ShopCard key={shop.id} shop={shop} />
                 ))}
@@ -117,15 +169,54 @@ export default function Index() {
           }
         />
 
-        {/* Bottom Sheet for Address Selection */}
         <BottomSheet
           ref={bottomSheetRef}
           snapPoints={snapPoints}
           index={-1}
           enablePanDownToClose={true}
+          backgroundStyle={{
+            borderTopLeftRadius: 20,
+            borderTopRightRadius: 20,
+            backgroundColor: "#f2f2f2",
+          }}
         >
           <BottomSheetView style={{ padding: 20 }}>
-            <Text>Location change will be supported soon!</Text>
+            <View>
+              <Text
+                style={{ fontSize: 21, fontWeight: "bold", marginBottom: 12 }}
+              >
+                Few more steps...
+              </Text>
+              <Text
+                style={{ fontSize: 16, fontWeight: "bold", marginBottom: 12 }}
+              >
+                Phone Number
+              </Text>
+              <TextInput
+                placeholder="Enter your phone number"
+                value={number}
+                onChangeText={setNumber}
+                className="bg-white p-3 rounded-xl mb-4 border border-gray-300"
+                keyboardType="number-pad"
+              />
+              <Text
+                style={{ fontSize: 16, fontWeight: "bold", marginBottom: 12 }}
+              >
+                Current Address
+              </Text>
+              <TextInput
+                placeholder="Enter your address"
+                value={newAddress}
+                onChangeText={setNewAddress}
+                className="bg-white p-3 rounded-xl mb-4 border border-gray-300"
+              />
+              <PrimaryButton
+                isPrimary={true}
+                onPressFunction={handleSave}
+                loading={false}
+                title="Save"
+              />
+            </View>
           </BottomSheetView>
         </BottomSheet>
       </View>

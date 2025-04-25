@@ -1,4 +1,4 @@
-import { auth, db } from "@/utils/firebase";
+import { auth, db, fetchFilteredData, updateData } from "@/utils/firebase";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import {
   createUserWithEmailAndPassword,
@@ -7,7 +7,7 @@ import {
   onAuthStateChanged,
   User as FirebaseUser,
 } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, where } from "firebase/firestore";
 import {
   createContext,
   useContext,
@@ -29,6 +29,9 @@ interface AuthContextProps {
     password: string
   ) => Promise<{ success: boolean; msg?: string }>;
   SignOut: () => Promise<{ success: boolean; msg?: string }>;
+  updateUserData: (
+    updatedFields: Record<string, any>
+  ) => Promise<{ success: boolean; msg?: string }>;
 }
 
 const AuthContext = createContext<AuthContextProps | null>(null);
@@ -41,7 +44,6 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     const unsubscribe = onAuthStateChanged(
       auth,
       (currentUser) => {
-        // console.log("Refresh triggered:", currentUser);
         setUser(currentUser);
         setIsAuthenticated(!!currentUser);
       },
@@ -59,26 +61,16 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         email,
         password
       );
-      console.log("User created successfully:", response.user.uid);
-
       const userData = {
         email,
         userId: response.user.uid,
         fname,
       };
 
-      await setDoc(doc(db, "users", response.user.uid), userData);
       await ReactNativeAsyncStorage.setItem(
         "userData",
         JSON.stringify(userData)
       );
-
-      console.log("User data saved to Firestore:", {
-        email,
-        userId: response.user.uid,
-        fname,
-      });
-
       return { success: true };
     } catch (error: any) {
       console.error("Error during SignUp:", error);
@@ -109,7 +101,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
       }
 
       return { success: true };
-    } catch (error) {
+    } catch (error: any) {
       let msg = error.message;
       if (msg.includes("(auth/invalid-email)")) msg = "Email is invalid";
       if (msg.includes("(auth/invalid-credential)"))
@@ -130,19 +122,35 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // const updateUserData = async (userId) => {
-  //   const docRef = doc(db, "users", userId);
-  //   const docSnap = await getDoc(docRef);
+  const updateUserData = async (
+    updatedFields: Record<string, any>
+  ): Promise<{ success: boolean; msg?: string }> => {
+    if (!user) {
+      return { success: false, msg: "No authenticated user" };
+    }
 
-  //   if (docSnap.exists()) {
-  //     let data = docSnap.data();
-  //     setUser({ ...user, firstName: data.firstName,});
-  //   }
-  // };
+    try {
+      await updateData("users", user.uid, updatedFields);
+
+      const updatedUserData = await fetchFilteredData("orders", [
+        where("userId", "==", user.uid),
+      ]);
+
+      await ReactNativeAsyncStorage.setItem(
+        "userData",
+        JSON.stringify(updatedUserData)
+      );
+
+      return { success: true };
+    } catch (error: any) {
+      console.error("Error updating user data:", error);
+      return { success: false, msg: "Failed to update user data" };
+    }
+  };
 
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated, SignUp, SignIn, SignOut }}
+      value={{ user, isAuthenticated, SignUp, SignIn, SignOut, updateUserData }}
     >
       {children}
     </AuthContext.Provider>

@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import {
-  TouchableOpacity,
   Text,
   ActivityIndicator,
   TouchableOpacityProps,
+  Pressable,
 } from "react-native";
 
 type PrimaryButtonProps = TouchableOpacityProps & {
@@ -35,13 +35,13 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
   };
 
   return (
-    <TouchableOpacity
+    <Pressable
       className={`${
         isPrimary
           ? "hover:bg-green-200 active:bg-green-400 bg-green-300 border-green-600"
           : "bg-gray-500"
       } 
-      mx-auto w-full items-center p-2 rounded-2xl  duration-150 border-l-4 border-b-4 
+       w-full items-center p-3 rounded-2xl  duration-150 border-2 mb-2
       `}
       onPress={handlePress}
       disabled={loading || isLoading}
@@ -58,7 +58,7 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
           {title}
         </Text>
       )}
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 

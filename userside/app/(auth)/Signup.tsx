@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import {
   View,
-  TextInput,
   Text,
   Alert,
   Image,
@@ -13,6 +12,7 @@ import {
 import { useRouter } from "expo-router";
 import { useAuth } from "@/context/AuthContext";
 import PrimaryButton from "@/components/PrimaryButton";
+import InputBox from "@/components/InputBox";
 
 export default function SignupScreen() {
   const [email, setEmail] = useState("");
@@ -63,29 +63,19 @@ export default function SignupScreen() {
             <Text className="text-red-500 mb-4 text-center">{error}</Text>
           ) : null}
 
-          <TextInput
+          <InputBox
             placeholder="First Name"
             value={fname}
             onChangeText={setFname}
-            className="border border-gray-300 rounded-lg p-4 mb-4"
-            placeholderTextColor="#666"
           />
 
-          <TextInput
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            className="border border-gray-300 rounded-lg p-4 mb-4"
-            placeholderTextColor="#666"
-          />
+          <InputBox placeholder="Email" value={email} onChangeText={setEmail} />
 
-          <TextInput
+          <InputBox
             placeholder="Password"
             value={password}
             onChangeText={setPassword}
             secureTextEntry
-            className="border border-gray-300 rounded-lg p-4 mb-8"
-            placeholderTextColor="#666"
           />
 
           <PrimaryButton

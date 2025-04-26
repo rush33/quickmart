@@ -1,7 +1,6 @@
 import { useState } from "react";
 import {
   View,
-  TextInput,
   Text,
   Alert,
   Image,
@@ -14,6 +13,7 @@ import { useRouter } from "expo-router";
 import { useAuth } from "@/context/AuthContext";
 import React from "react";
 import PrimaryButton from "@/components/PrimaryButton";
+import InputBox from "@/components/InputBox";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -62,20 +62,12 @@ export default function Login() {
           {error ? (
             <Text className="text-red-500 mb-4 text-center">{error}</Text>
           ) : null}
-          <TextInput
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            className="border border-gray-300 rounded-lg p-4 mb-4"
-            placeholderTextColor="#666"
-          />
-          <TextInput
+          <InputBox placeholder="Email" value={email} onChangeText={setEmail} />
+          <InputBox
             placeholder="Password"
             value={password}
             onChangeText={setPassword}
             secureTextEntry
-            className="border border-gray-300 rounded-lg p-4 mb-8"
-            placeholderTextColor="#666"
           />
           <PrimaryButton
             title="Sign In"

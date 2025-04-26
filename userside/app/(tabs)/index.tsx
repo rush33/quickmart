@@ -1,14 +1,5 @@
 import "../../global.css";
-import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  View,
-  Text,
-  FlatList,
-  Alert,
-  Image,
-  TouchableOpacity,
-  TextInput,
-} from "react-native";
+import { View, Text, FlatList, Alert, Image } from "react-native";
 import Header from "../../components/Header";
 import ShopCard from "../../components/ShopCard";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -23,6 +14,7 @@ import { getUserData } from "@/utils/userData";
 import { User } from "@/types/user";
 import { useAuth } from "@/context/AuthContext";
 import PrimaryButton from "@/components/PrimaryButton";
+import InputBox from "@/components/InputBox";
 
 export default function Index() {
   const { updateUserData } = useAuth();
@@ -192,11 +184,10 @@ export default function Index() {
               >
                 Phone Number
               </Text>
-              <TextInput
+              <InputBox
                 placeholder="Enter your phone number"
                 value={number}
                 onChangeText={setNumber}
-                className="bg-white p-3 rounded-xl mb-4 border border-gray-300"
                 keyboardType="number-pad"
               />
               <Text
@@ -204,11 +195,10 @@ export default function Index() {
               >
                 Current Address
               </Text>
-              <TextInput
+              <InputBox
                 placeholder="Enter your address"
                 value={newAddress}
                 onChangeText={setNewAddress}
-                className="bg-white p-3 rounded-xl mb-4 border border-gray-300"
               />
               <PrimaryButton
                 isPrimary={true}

@@ -19,15 +19,19 @@ import { orderStatuses } from "@/constants/orderStatus";
 import { getUserData } from "@/utils/userData";
 import { AppDispatch, RootState } from "@/redux/store";
 import { Order } from "@/types/order";
+import { router } from "expo-router";
+import PrimaryButton from "@/components/PrimaryButton";
 
 export default function CartScreen() {
   const items = useSelector(selectCartItems);
-  const total = useSelector(selectCartTotal);
+  const itemTotal = useSelector(selectCartTotal);
   const dispatch = useDispatch<AppDispatch>();
   const shopId = items[0]?.shopId;
   const shop = useSelector((state: RootState) =>
     state.shop.data.find((s) => s.id === shopId)
   );
+  const cartLoading = useSelector((state: RootState) => state.order.loading);
+  const subTotal = itemTotal + 40;
 
   const handleOrder = async () => {
     try {
@@ -50,7 +54,7 @@ export default function CartScreen() {
         shopId: shopId,
         shopName: shop?.name || "",
         status: orderStatuses.pending,
-        totalAmount: total,
+        totalAmount: subTotal,
         userCoords: {
           latitude: user.coords.latitude,
           longitude: user.coords.longitude,
@@ -96,10 +100,15 @@ export default function CartScreen() {
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
       {/* Header */}
-      <View className="px-6 py-4 bg-white border-b border-gray-200 flex-row items-center justify-between">
-        <Text className="text-xl font-bold">My Cart</Text>
-        <Text className="text-lg text-gray-700">₹{total.toFixed(2)}</Text>
+      <View className="p-4 bg-white shadow-xs">
+        <Text className="text-xl font-bold text-center">My Orders</Text>
       </View>
+      <TouchableOpacity
+        onPress={() => router.back()}
+        className="absolute top-4 left-4 bg-white p-1 rounded-full"
+      >
+        <Ionicons name="arrow-back" size={24} color="black" />
+      </TouchableOpacity>
 
       {items.length === 0 ? (
         <View className="flex-1 items-center justify-center">
@@ -117,17 +126,33 @@ export default function CartScreen() {
       {items.length > 0 && (
         <View className="absolute mb-6 bottom-0 w-full bg-white border-t border-gray-200 p-4">
           <View className="flex-row justify-between mb-4">
-            <Text className="text-lg font-semibold">Subtotal</Text>
-            <Text className="text-lg font-semibold">₹{total.toFixed(2)}</Text>
+            <Text className="text-sm font-normal">Item Toal</Text>
+            <Text className="text-sm font-normal">₹{itemTotal.toFixed(2)}</Text>
           </View>
-          <TouchableOpacity
+          <View className="flex-row justify-between mb-4">
+            <Text className="text-sm font-normal">Delivery Fee</Text>
+            <Text className="text-sm font-normal">₹40</Text>
+          </View>
+          <View className="flex-row justify-between mb-4">
+            <Text className="text-lg font-semibold">To Pay</Text>
+            <Text className="text-lg font-semibold">
+              ₹{subTotal.toFixed(2)}
+            </Text>
+          </View>
+          {/* <TouchableOpacity
             className="bg-blue-600 py-4 rounded-xl items-center"
             onPress={handleOrder}
           >
             <Text className="text-white text-lg font-semibold">
               Place Order
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+          <PrimaryButton
+            isPrimary={true}
+            loading={cartLoading}
+            title="Place Order"
+            onPressFunction={handleOrder}
+          />
         </View>
       )}
     </SafeAreaView>

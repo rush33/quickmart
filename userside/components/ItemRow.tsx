@@ -8,7 +8,6 @@ import {
 } from "@/redux/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { MaterialIcons } from "@expo/vector-icons";
 
 type Props = {
   item: Item;
@@ -43,36 +42,60 @@ export default function ItemRow({ item }: Props) {
   };
 
   return (
-    <View className="flex-row items-center mb-4 border-b border-gray-200 pb-4">
-      <Image
-        source={{ uri: item.image }}
-        className="w-16 h-16 rounded-md mr-4"
-      />
-      <View className="flex-1">
-        <Text className="font-semibold text-gray-900">{item.name}</Text>
-        <Text className="text-sm text-gray-600">{item.description}</Text>
-        <Text className="text-sm text-gray-700">
-          ₹{item.price} / {item.unit}
-        </Text>
+    <View className="flex-row justify-between items-start mb-6 px-4">
+      <View className="flex-1 pr-4">
+        {/* Name with green dot */}
+        <View className="flex-row items-center gap-2 mb-1">
+          <View className="w-4 h-4 border border-green-600 items-center justify-center">
+            <View className="w-2 h-2 rounded-full bg-green-600" />
+          </View>
 
-        <View className="bg-white pt-3">
-          <View className="flex-row items-center justify-between">
-            <TouchableOpacity onPress={handleRemoveFromCart}>
-              <MaterialIcons
-                name="remove-circle"
-                color={itemCountInCart > 0 ? "#4ade80" : "lightgray"}
-                size={42}
-              />
-            </TouchableOpacity>
-
-            <Text>{itemCountInCart > 0 ? itemCountInCart : " "}</Text>
-
-            <TouchableOpacity onPress={handleAddToCart}>
-              <MaterialIcons name="add-circle" color="#4ade80" size={42} />
-            </TouchableOpacity>
+          <View className="flex-row items-center gap-1">
+            <Text className="text-lg font-semibold text-gray-800">
+              {item.name}
+            </Text>
+            <Text className="text-xs text-gray-500">
+              {item.amount} {item.unit}
+            </Text>
           </View>
         </View>
+
+        {/* Price */}
+        <Text className="text-lg font-medium text-gray-800 mb-1">
+          ₹{item.price}
+        </Text>
+
+        {/* Description */}
+        {item.description ? (
+          <Text className="text-xs text-gray-600">{item.description}</Text>
+        ) : null}
       </View>
+
+      {/* Image and Add/Remove Buttons */}
+     {/* Image and Add/Remove Buttons */}
+<View className="w-28 items-center relative">
+  <Image source={{ uri: item.image }} className="w-28 h-28 rounded-lg" />
+  
+  {itemCountInCart === 0 ? (
+    <TouchableOpacity
+      className="bg-white border border-green-600 rounded-lg px-5 py-1.5 absolute bottom-0"
+      onPress={handleAddToCart}
+    >
+      <Text className="text-green-600 font-medium">ADD</Text>
+    </TouchableOpacity>
+  ) : (
+    <View className="flex-row items-center bg-white border border-gray-300 rounded-lg absolute bottom-0">
+      <TouchableOpacity className="px-3 py-1" onPress={handleRemoveFromCart}>
+        <Text className="text-green-600 text-xl font-medium">−</Text>
+      </TouchableOpacity>
+      <Text className="px-2 text-base text-gray-800">{itemCountInCart}</Text>
+      <TouchableOpacity className="px-3 py-1" onPress={handleAddToCart}>
+        <Text className="text-green-600 text-xl font-medium">＋</Text>
+      </TouchableOpacity>
+    </View>
+  )}
+</View>
+
     </View>
   );
 }

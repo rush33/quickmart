@@ -48,18 +48,14 @@ const ShopDetails = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
-      <StatusBar barStyle="dark-content" />
-
       <ScrollView showsVerticalScrollIndicator={false}>
         <ShopDetailsCard shop={shop} />
         {/* Items List */}
-        <View className="px-4 py-2">
-          <Text className="text-lg font-semibold mb-2">Items</Text>
-
+        <View className="px-4">
           {itemsLoading ? (
-            <Text>Loading items...</Text>
+            <Text className="px-4">Loading items...</Text>
           ) : items.length === 0 ? (
-            <Text>No items found for this shop.</Text>
+            <Text className="px-4">No items found for this shop.</Text>
           ) : (
             items.map((item) => <ItemRow key={item.itemId} item={item} />)
           )}

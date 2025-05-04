@@ -54,7 +54,7 @@ const OrderDetails = () => {
   return (
     <View className="flex-1 bg-gray-50">
       <View className="bg-white p-6 rounded-b-xl shadow-sm">
-        <Text className="text-2xl font-bold text-gray-800 mb-2">
+        <Text className="text-xl font-bold text-gray-800 mb-2 text-center">
           Order Details
         </Text>
 
@@ -82,7 +82,7 @@ const OrderDetails = () => {
           </View>
         </View>
 
-        <View className="space-y-4">
+        <View className="gap-y-3">
           <View>
             <Text className="text-sm text-gray-500">Order ID</Text>
             <Text className="text-base font-medium text-gray-800">
@@ -123,7 +123,7 @@ const OrderDetails = () => {
         className="absolute bottom-6 left-6 right-6 bg-white p-4 rounded-xl shadow-sm flex-row items-center justify-center"
       >
         <Ionicons name="arrow-back" size={20} color="#000" />
-        <Text className="ml-2 text-base font-medium">Back to Home</Text>
+        <Text className="ml-2 text-base font-medium">Back to My Orders</Text>
       </TouchableOpacity>
     </View>
   );

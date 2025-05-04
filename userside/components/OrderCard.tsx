@@ -20,16 +20,16 @@ const OrderCard = ({ order }: { order: Order }) => {
           <Text className={`font-bold text-2xl ${statusColor}`}>
             {statusText}
           </Text>
-          <Text className="text-sm pt-1 text-gray-700">
+          <Text className="text-sm pt-1 text-gray-700 font-light">
             {formatFirebaseTimestamp(order.createdAt)}
           </Text>
-          <Text className="text-sm pt-1 text-gray-700">
+          <Text className="text-sm pt-1 text-gray-700 font-light">
             Order ID #{order.orderId}
           </Text>
 
           <View className="mt-3">
             {order.items.map((item, idx) => (
-              <Text key={idx} className="text-gray-800 font-semibold">
+              <Text key={idx} className="text-gray-800 font-normal">
                 × {item.quantity} {item.name}
               </Text>
             ))}

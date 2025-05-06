@@ -10,14 +10,19 @@ import { categories } from "@/constants/categories";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import * as Location from "expo-location";
-import { getUserData } from "@/utils/userData";
+import {
+  getUserData,
+  logLocalUserData,
+  updateUserDataField,
+} from "@/utils/userData";
 import { User } from "@/types/user";
 import { useAuth } from "@/context/AuthContext";
 import PrimaryButton from "@/components/PrimaryButton";
 import InputBox from "@/components/InputBox";
+import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Index() {
-  const { updateUserData } = useAuth();
+  const { updateUserData, user } = useAuth();
   const dispatch = useDispatch<AppDispatch>();
   const { data: shopData, loading } = useSelector(
     (state: RootState) => state.shop
@@ -28,19 +33,17 @@ export default function Index() {
   );
   const [userData, setUserData] = useState<User | null>(null);
   const [newAddress, setNewAddress] = useState("");
-  const [number, setNumber] = useState("");
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ["40%"], []);
 
   useEffect(() => {
     const initialize = async () => {
-      const user = await getUserData();
-      setUserData(user);
+      logLocalUserData();
+      const userdata = await getUserData();
+      setUserData(userdata);
+      console.log("user data from local db", userdata);
       dispatch(fetchShops());
-      getLocationAsync(user);
-      if (!user?.address || !user?.phoneNumber) {
-        setTimeout(() => bottomSheetRef.current?.expand(), 500);
-      }
+      getLocationAsync(userdata);
     };
 
     initialize();
@@ -70,6 +73,13 @@ export default function Index() {
         location.coords.longitude
       );
 
+      updateUserDataField({
+        coords: {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        },
+      });
+
       // const updatedUserData: User = {
       //   ...userData,
       //   coords: {
@@ -96,12 +106,11 @@ export default function Index() {
     const updatedUserData: User = {
       ...((userData ?? {}) as User),
       address: newAddress.trim(),
-      phoneNumber: number.trim(),
     };
-    // await ReactNativeAsyncStorage.setItem(
-    //   "userData",
-    //   JSON.stringify(updatedUserData)
-    // );
+    await ReactNativeAsyncStorage.setItem(
+      "userData",
+      JSON.stringify(updatedUserData)
+    );
     console.log("userdata", updatedUserData);
     await updateUserData(updatedUserData);
     bottomSheetRef.current?.close();
@@ -165,7 +174,6 @@ export default function Index() {
           ref={bottomSheetRef}
           snapPoints={snapPoints}
           index={-1}
-          enablePanDownToClose={true}
           backgroundStyle={{
             borderTopLeftRadius: 20,
             borderTopRightRadius: 20,
@@ -174,25 +182,7 @@ export default function Index() {
         >
           <BottomSheetView style={{ padding: 20 }}>
             <View>
-              <Text
-                style={{ fontSize: 21, fontWeight: "bold", marginBottom: 12 }}
-              >
-                Few more steps...
-              </Text>
-              <Text
-                style={{ fontSize: 16, fontWeight: "bold", marginBottom: 12 }}
-              >
-                Phone Number
-              </Text>
-              <InputBox
-                placeholder="Enter your phone number"
-                value={number}
-                onChangeText={setNumber}
-                keyboardType="number-pad"
-              />
-              <Text
-                style={{ fontSize: 16, fontWeight: "bold", marginBottom: 12 }}
-              >
+              <Text style={{ fontSize: 14, marginBottom: 12 }}>
                 Current Address
               </Text>
               <InputBox

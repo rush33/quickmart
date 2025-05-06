@@ -1,4 +1,6 @@
+import { store } from "@/redux/store";
 import { auth, db, fetchFilteredData, updateData } from "@/utils/firebase";
+import { logLocalUserData } from "@/utils/userData";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import {
   createUserWithEmailAndPassword,
@@ -7,7 +9,7 @@ import {
   onAuthStateChanged,
   User as FirebaseUser,
 } from "firebase/auth";
-import { doc, getDoc, where } from "firebase/firestore";
+import { doc, getDoc, setDoc, where } from "firebase/firestore";
 import {
   createContext,
   useContext,
@@ -19,10 +21,13 @@ import {
 interface AuthContextProps {
   user: FirebaseUser | null;
   isAuthenticated: boolean;
+  initializing: boolean;
   SignUp: (
     email: string,
     password: string,
-    fname: string
+    fname: string,
+    phone: string,
+    address: string
   ) => Promise<{ success: boolean; msg?: string }>;
   SignIn: (
     email: string,
@@ -39,8 +44,10 @@ const AuthContext = createContext<AuthContextProps | null>(null);
 export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [initializing, setInitializing] = useState(false);
 
   useEffect(() => {
+    console.warn("✅ AuthContext mounted");
     const unsubscribe = onAuthStateChanged(
       auth,
       (currentUser) => {
@@ -54,23 +61,41 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     return () => unsubscribe();
   }, []);
 
-  const SignUp = async (email: string, password: string, fname: string) => {
+  const SignUp = async (
+    email: string,
+    password: string,
+    fname: string,
+    phone: string,
+    address: string
+  ) => {
     try {
+      setInitializing(true);
+
       const response = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
+
       const userData = {
-        email,
+        email: email,
         userId: response.user.uid,
-        fname,
+        fname: fname,
+        phoneNumber: phone,
+        address: address,
       };
+
+      await setDoc(doc(db, "users", response.user.uid), userData);
+      console.log("user data set");
 
       await ReactNativeAsyncStorage.setItem(
         "userData",
         JSON.stringify(userData)
       );
+      console.log("✅ AsyncStorage: User data saved on SignUp");
+
+      await logLocalUserData();
+
       return { success: true };
     } catch (error: any) {
       console.error("Error during SignUp:", error);
@@ -83,11 +108,14 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         msg = "Password must be at least 6 characters";
 
       return { success: false, msg };
+    } finally {
+      setInitializing(false);
     }
   };
 
   const SignIn = async (email: string, password: string) => {
     try {
+      setInitializing(true);
       const res = await signInWithEmailAndPassword(auth, email, password);
       const userRef = doc(db, "users", res.user.uid);
       const userSnap = await getDoc(userRef);
@@ -98,6 +126,8 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
           "userData",
           JSON.stringify(userData)
         );
+        console.log("✅ AsyncStorage: User data saved on SignIn");
+        await logLocalUserData();
       }
 
       return { success: true };
@@ -109,12 +139,16 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
       if (msg.includes("(auth/user-not-found)")) msg = "User not found";
       if (msg.includes("(auth/wrong-password)")) msg = "Incorrect password";
       return { success: false, msg };
+    } finally {
+      setInitializing(false);
     }
   };
 
   const SignOut = async () => {
     try {
       await signOut(auth);
+      await ReactNativeAsyncStorage.clear();
+      store.dispatch({ type: "RESET_APP" });
       return { success: true };
     } catch (error) {
       console.error("Logout error:", error);
@@ -132,7 +166,7 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     try {
       await updateData("users", user.uid, updatedFields);
 
-      const updatedUserData = await fetchFilteredData("orders", [
+      const updatedUserData = await fetchFilteredData("users", [
         where("userId", "==", user.uid),
       ]);
 
@@ -140,6 +174,12 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
         "userData",
         JSON.stringify(updatedUserData)
       );
+      await ReactNativeAsyncStorage.setItem(
+        "userData",
+        JSON.stringify(updatedUserData)
+      );
+      console.log("✅ AsyncStorage: User data updated");
+      await logLocalUserData();
 
       return { success: true };
     } catch (error: any) {
@@ -150,7 +190,15 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated, SignUp, SignIn, SignOut, updateUserData }}
+      value={{
+        user,
+        isAuthenticated,
+        SignUp,
+        SignIn,
+        SignOut,
+        updateUserData,
+        initializing,
+      }}
     >
       {children}
     </AuthContext.Provider>

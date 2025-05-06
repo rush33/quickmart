@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   View,
   Text,
-  Alert,
   Image,
   TouchableOpacity,
   KeyboardAvoidingView,
@@ -10,7 +9,6 @@ import {
   StatusBar,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { useAuth } from "@/context/AuthContext";
 import PrimaryButton from "@/components/PrimaryButton";
 import InputBox from "@/components/InputBox";
 
@@ -18,23 +16,22 @@ export default function SignupScreen() {
   const [email, setEmail] = useState("");
   const [fname, setFname] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { SignUp } = useAuth();
 
-  const handleSignup = async () => {
-    try {
-      setLoading(true);
-      let res = await SignUp(email, password, fname);
-      setLoading(false);
-      console.log("res in signup", res);
-      if (!res.success) {
-        Alert.alert("Sign Up", res.msg);
-      }
-    } catch (err) {
-      setError(err.message);
+  const goToNextStep = () => {
+    setLoading(true);
+    if (!email || !fname || !password) {
+      setError("Please fill in all fields.");
+      return;
     }
+
+    router.navigate({
+      pathname: "/(auth)/SignupDetails",
+      params: { email, fname, password },
+    });
+    setLoading(false);
   };
 
   return (
@@ -43,16 +40,13 @@ export default function SignupScreen() {
       className="flex-1 bg-black"
     >
       <StatusBar barStyle="dark-content" />
-      {/* Top Image Section */}
       <Image
         source={require("../../assets/images/delivery.jpg")}
         className="absolute w-full h-full"
         resizeMode="cover"
       />
 
-      {/* Content Overlay */}
       <View className="flex-1 justify-end">
-        {/* White curved container */}
         <View className="bg-white rounded-t-[40px] px-8 pt-10 pb-14">
           <Text className="text-2xl font-extrabold mb-3">Create Account</Text>
           <Text className="text-lg text-gray-600 mb-8">
@@ -68,9 +62,7 @@ export default function SignupScreen() {
             value={fname}
             onChangeText={setFname}
           />
-
           <InputBox placeholder="Email" value={email} onChangeText={setEmail} />
-
           <InputBox
             placeholder="Password"
             value={password}
@@ -79,10 +71,10 @@ export default function SignupScreen() {
           />
 
           <PrimaryButton
-            title="Sign Up"
+            title="Next"
             isPrimary={true}
+            onPressFunction={goToNextStep}
             loading={loading}
-            onPressFunction={handleSignup}
           />
 
           <TouchableOpacity onPress={() => router.push("/(auth)/Login")}>

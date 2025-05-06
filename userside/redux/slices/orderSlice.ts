@@ -7,9 +7,11 @@ import {
   updateDoc,
   serverTimestamp,
   getDoc,
+  where,
 } from "firebase/firestore";
-import { db, fetchData } from "@/utils/firebase";
-import { router } from "expo-router"; // or wherever you're using router
+import { db, fetchData, fetchFilteredData } from "@/utils/firebase";
+import { router } from "expo-router";
+import { useAuth } from "@/context/AuthContext";
 
 const initialState: orderState = {
   data: [],
@@ -17,13 +19,18 @@ const initialState: orderState = {
   error: null,
 };
 
-export const fetchOrders = createAsyncThunk<Order[]>(
+
+export const fetchOrders = createAsyncThunk<Order[], string>(
   "order/fetchOrders",
-  async () => {
-    const orders = (await fetchData("orders")) as any[];
+  async (userId) => {
+    console.log("user id in orders", userId);
+    const orders = (await fetchFilteredData("orders", [
+      where("userId", "==", userId),
+    ])) as any[];
     const typedOrders: Order[] = orders.map((order) => ({
       ...order,
     }));
+    console.log(typedOrders);
     return typedOrders;
   }
 );
@@ -88,7 +95,7 @@ const orderSlice = createSlice({
       })
       .addCase(placeOrder.fulfilled, (state, action) => {
         state.loading = false;
-        state.data.push(action.payload); // Add the new order to state
+        state.data.push(action.payload);
       })
       .addCase(placeOrder.rejected, (state, action) => {
         state.loading = false;

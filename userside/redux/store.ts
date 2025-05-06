@@ -3,6 +3,7 @@ import cartReducer from "./slices/cartSlice";
 import shopReducer from "./slices/shopSlice";
 import itemsReducer from "./slices/itemsSlice";
 import orderReducer from "./slices/orderSlice";
+import rootReducer from "./rootReducer";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     shop: shopReducer,
     shopProducts: itemsReducer,
     order: orderReducer,
+    rootReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

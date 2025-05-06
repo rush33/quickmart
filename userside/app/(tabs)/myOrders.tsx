@@ -5,19 +5,37 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOrders } from "@/redux/slices/orderSlice";
 import { useFocusEffect } from "expo-router";
+import { getUserData } from "@/utils/userData";
 
 const MyOrders = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { data, loading } = useSelector((state: RootState) => state.order);
+  const [userId, setUserId] = React.useState<string | null>(null);
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
-      dispatch(fetchOrders());
-    }, [dispatch])
+      if (userId) {
+        dispatch(fetchOrders(userId));
+      }
+    }, [dispatch, userId])
   );
+
+  const fetchUserData = async () => {
+    const userdata = await getUserData();
+    if (userdata) {
+      setUserId(userdata.userId);
+    }
+  };
 
   return loading ? (
     <View className="bg-white flex-1">
+      <View className="p-2 bg-white shadow-xs">
+        <Text className="text-xl font-bold text-center">My Orders</Text>
+      </View>
       <Text>Loading...</Text>
     </View>
   ) : (

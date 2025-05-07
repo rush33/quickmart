@@ -1,11 +1,11 @@
 import { Slot, useSegments, useRouter } from "expo-router";
 import { AuthContextProvider, useAuth } from "../context/AuthContext";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { Provider } from "react-redux";
 import { store } from "../redux/store";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { ActivityIndicator, View } from "react-native";
+import Toast from "react-native-toast-message";
 
 const MainLayout = () => {
   const { initializing, isAuthenticated } = useAuth();
@@ -35,6 +35,7 @@ const MainLayout = () => {
   return (
     <Provider store={store}>
       <Slot />
+      <Toast />
     </Provider>
   );
 };

@@ -1,6 +1,11 @@
 import { store } from "@/redux/store";
+import { User } from "@/types/user";
 import { auth, db, fetchFilteredData, updateData } from "@/utils/firebase";
-import { logLocalUserData } from "@/utils/userData";
+import {
+  getUserData,
+  logLocalUserData,
+  updateUserDataField,
+} from "@/utils/userData";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import {
   createUserWithEmailAndPassword,
@@ -166,18 +171,20 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
     try {
       await updateData("users", user.uid, updatedFields);
 
-      const updatedUserData = await fetchFilteredData("users", [
+      // await ReactNativeAsyncStorage.clear();
+      await logLocalUserData();
+      const [updatedUserData] = await fetchFilteredData("users", [
         where("userId", "==", user.uid),
       ]);
 
-      await ReactNativeAsyncStorage.setItem(
-        "userData",
-        JSON.stringify(updatedUserData)
-      );
-      await ReactNativeAsyncStorage.setItem(
-        "userData",
-        JSON.stringify(updatedUserData)
-      );
+      console.log("updated data from db", updatedUserData);
+      updateUserDataField({
+        address: updatedUserData.address,
+        fname: updatedUserData.fname,
+        lastName: updatedUserData.lastName,
+        phoneNumber: updatedUserData.phoneNumber,
+      });
+      
       console.log("✅ AsyncStorage: User data updated");
       await logLocalUserData();
 

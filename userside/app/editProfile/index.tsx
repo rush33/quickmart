@@ -1,34 +1,91 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   SafeAreaView,
   View,
   Text,
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import PrimaryButton from "@/components/PrimaryButton";
 import { router } from "expo-router";
+import Toast from "react-native-toast-message";
+
+import PrimaryButton from "@/components/PrimaryButton";
 import InputBox from "@/components/InputBox";
+import { getUserData } from "@/utils/userData";
+import { User } from "@/types/user";
+import { useAuth } from "@/context/AuthContext";
 
 export default function EditProfile(): JSX.Element {
-  const [firstName, setFirstName] = useState<string>("");
-  const [lastName, setLastName] = useState<string>("");
-  const [phoneNumber, setPhoneNumber] = useState<string>("");
-  const [address, setAddress] = useState<string>("");
-  const [phoneNumberError, setPhoneNumberError] = useState<string>("");
+  const { updateUserData } = useAuth();
+  const [originalData, setOriginalData] = useState<User | null>(null);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [address, setAddress] = useState("");
+  const [phoneNumberError, setPhoneNumberError] = useState("");
+  const [isModified, setIsModified] = useState(false);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userData = await getUserData();
+      if (userData) {
+        setFirstName(userData.fname || "");
+        setLastName(userData?.lastName || "");
+        setPhoneNumber(userData.phoneNumber || "");
+        setAddress(userData.address || "");
+        setOriginalData(userData);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  useEffect(() => {
+    if (!originalData) return;
+
+    const changed =
+      firstName !== originalData.fname ||
+      lastName !== originalData.lastName ||
+      phoneNumber !== originalData.phoneNumber ||
+      address !== originalData.address;
+
+    setIsModified(changed);
+  }, [firstName, lastName, phoneNumber, address, originalData]);
 
   const handlePhoneNumberChange = (text: string) => {
-    const formattedPhoneNumber = text.replace(/\D/g, "").slice(0, 10);
-    setPhoneNumber(formattedPhoneNumber);
+    const formatted = text.replace(/\D/g, "").slice(0, 10);
+    setPhoneNumber(formatted);
+    setPhoneNumberError(
+      formatted.length !== 10 ? "Phone number must be 10 digits." : ""
+    );
+  };
 
-    if (formattedPhoneNumber.length !== 10) {
-      setPhoneNumberError("Phone number must be 10 digits.");
-    } else {
-      setPhoneNumberError("");
+  const handleUpdate = async () => {
+    try {
+      await updateUserData({
+        fname: firstName,
+        lastName,
+        phoneNumber,
+        address,
+      });
+
+      Toast.show({
+        type: "success",
+        text1: "Profile updated successfully",
+      });
+
+      // setTimeout(() => {
+      //   router.back();
+      // }, 1500);
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Update failed",
+        text2: "Please try again later",
+      });
     }
   };
 
@@ -37,17 +94,13 @@ export default function EditProfile(): JSX.Element {
       <View className="p-5 bg-white shadow-xs mb-5">
         <TouchableOpacity
           className="absolute top-4 left-4 bg-white p-2 rounded-full"
-          onPress={() => {
-            router.navigate("/(tabs)/profile");
-          }}
+          onPress={() => router.back()}
         >
-          <Ionicons name="arrow-back-outline" size={22} color="#00000" />
+          <Ionicons name="arrow-back-outline" size={22} color="#000000" />
         </TouchableOpacity>
-        <View>
-          <Text className="text-xl font-bold text-center">
-            Update your details
-          </Text>
-        </View>
+        <Text className="text-xl font-bold text-center">
+          Update your details
+        </Text>
       </View>
 
       <KeyboardAvoidingView
@@ -86,7 +139,7 @@ export default function EditProfile(): JSX.Element {
               keyboardType="phone-pad"
             />
             {phoneNumberError ? (
-              <Text style={{ color: "red" }}>{phoneNumberError}</Text>
+              <Text className="text-red-600">{phoneNumberError}</Text>
             ) : null}
           </View>
 
@@ -100,19 +153,16 @@ export default function EditProfile(): JSX.Element {
               onChangeText={setAddress}
             />
           </View>
-
-          {/* Placeholder for map */}
-          <View className="mt-4 mb-6 h-40 rounded-2xl overflow-hidden border border-gray-300 items-center justify-center bg-gray-100">
-            <Text className="text-gray-500">Map placeholder</Text>
-          </View>
         </ScrollView>
       </KeyboardAvoidingView>
+
       <View className="p-5">
         <PrimaryButton
           isPrimary={true}
-          onPressFunction={() => {}}
+          onPressFunction={handleUpdate}
           loading={false}
           title="Update"
+          disabled={!isModified || !!phoneNumberError}
         />
       </View>
     </SafeAreaView>

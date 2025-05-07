@@ -6,13 +6,11 @@ import {
   TouchableOpacity,
   Pressable,
 } from "react-native";
-import { signOut } from "firebase/auth";
-import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
-import { auth } from "@/utils/firebase";
 import { getUserData } from "@/utils/userData";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import PrimaryButton from "@/components/PrimaryButton";
+import { useAuth } from "@/context/AuthContext";
 
 export default function Profile(): JSX.Element {
   const [name, setName] = useState<string | null>(null);
@@ -20,6 +18,7 @@ export default function Profile(): JSX.Element {
   const [phoneNumber, setPhoneNumber] = useState<string | null>(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const router = useRouter();
+  const { SignOut } = useAuth();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -34,9 +33,8 @@ export default function Profile(): JSX.Element {
   const handleLogout = async (): Promise<void> => {
     setIsLoggingOut(true);
     try {
-      await signOut(auth);
-      await ReactNativeAsyncStorage.removeItem("userData");
-      router.replace("/(auth)/Login"); // Navigate to login or onboarding screen
+      await SignOut();
+      router.replace("/(auth)/Login");
     } finally {
       setIsLoggingOut(false);
     }
@@ -75,7 +73,7 @@ export default function Profile(): JSX.Element {
         <View className="h-[1px] bg-gray-200 my-4" />
 
         {/* Addresses Section */}
-        <TouchableOpacity className="flex-row justify-between items-center py-4">
+        {/* <TouchableOpacity className="flex-row justify-between items-center py-4">
           <View>
             <Text className="text-xl font-semibold mb-1">Addresses</Text>
             <Text className="text-gray-500">
@@ -83,10 +81,10 @@ export default function Profile(): JSX.Element {
             </Text>
           </View>
           <AntDesign name="right" size={20} color="gray" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         {/* Divider */}
-        <View className="h-[1px] bg-gray-200 my-4" />
+        {/* <View className="h-[1px] bg-gray-200 my-4" /> */}
 
         {/* Spacer */}
         <View className="flex-1" />

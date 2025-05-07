@@ -21,6 +21,12 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { Order } from "@/types/order";
 import { router } from "expo-router";
 import PrimaryButton from "@/components/PrimaryButton";
+import RazorpayCheckout from "react-native-razorpay";
+interface PaymentResult {
+  razorpay_payment_id: string;
+  razorpay_order_id: string;
+  razorpay_signature: string;
+};
 
 export default function CartScreen() {
   const items = useSelector(selectCartItems);
@@ -36,22 +42,23 @@ export default function CartScreen() {
   const handleOrder = async () => {
     try {
       const user = await getUserData();
-      if (!user) throw new Error("User data not found");
-      if (!items?.length) throw new Error("No items in cart");
-      if (!shopId) throw new Error("Shop ID missing from cart items");
+      console.log("👤 User data:", user);
+
       if (
-        !user.coords ||
-        user.coords.latitude == null ||
-        user.coords.longitude == null
+        !user ||
+        !items.length ||
+        !shopId ||
+        !user.coords?.latitude ||
+        !user.coords?.longitude
       ) {
-        throw new Error("User coordinates are missing");
+        throw new Error("Missing required order details");
       }
 
-      const orderPayload = {
+      const orderPayload: Order = {
         userId: user.userId,
-        address: "Jorehaut",
-        items: items,
-        shopId: shopId,
+        address: user.address,
+        items,
+        shopId,
         shopName: shop?.name || "",
         status: orderStatuses.pending,
         totalAmount: subTotal,
@@ -61,14 +68,35 @@ export default function CartScreen() {
         },
       };
 
-      console.log("📝 Order Payload:", orderPayload);
+      const options = {
+        description: "Order Payment",
+        image: "https://your-logo-url.com/logo.png",
+        currency: "INR",
+        key: "rzp_test_KzHwbbsBPLIHbf",
+        amount: subTotal * 100,
+        name: "Quickmart",
+        prefill: {
+          email: user.email || "",
+          contact: user.phoneNumber || "",
+          name: user.fname || "",
+        },
+        theme: { color: "#3399cc" },
+      };
 
-      await dispatch(placeOrder(orderPayload));
+      console.log("💳 Razorpay Options:", options);
 
-      console.log("✅ Order placed successfully");
-      // TODO: reset cart, show success UI, etc.
+      RazorpayCheckout.open(options)
+        .then(async (paymentResult: PaymentResult) => {
+          console.log("✅ Payment Success:", paymentResult);
+
+          console.log("📤 Dispatching placeOrder...");
+          await dispatch(placeOrder(orderPayload));
+        })
+        .catch((error: any) => {
+          console.error("❌ Payment failed:", error);
+        });
     } catch (err: any) {
-      console.error("❌ Order placement failed:", err.message || err);
+      console.error("❌ Error in handleOrder:", err.message || err);
     }
   };
 
@@ -139,14 +167,6 @@ export default function CartScreen() {
               ₹{subTotal.toFixed(2)}
             </Text>
           </View>
-          {/* <TouchableOpacity
-            className="bg-blue-600 py-4 rounded-xl items-center"
-            onPress={handleOrder}
-          >
-            <Text className="text-white text-lg font-semibold">
-              Place Order
-            </Text>
-          </TouchableOpacity> */}
           <PrimaryButton
             isPrimary={true}
             loading={cartLoading}

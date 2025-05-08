@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "Quickmart",
-    "slug": "quick-mart",
-    "version": "0.1.5",
+    "name": "Swiftserve",
+    "slug": "swiftserve",
+    "version": "0.1.6",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
@@ -31,7 +31,7 @@
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Allow QuickMart to use your location."
+          "locationAlwaysAndWhenInUsePermission": "Allow Swiftserve to use your location."
         }
       ],
       "expo-router",

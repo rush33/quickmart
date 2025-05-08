@@ -77,7 +77,7 @@ export default function CartScreen() {
         currency: "INR",
         key: "rzp_test_KzHwbbsBPLIHbf",
         amount: subTotal * 100,
-        name: "Quickmart",
+        name: "Swiftserve",
         prefill: {
           email: user.email || "",
           contact: user.phoneNumber || "",

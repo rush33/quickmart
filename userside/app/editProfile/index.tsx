@@ -73,13 +73,16 @@ export default function EditProfile(): JSX.Element {
       });
 
       Toast.show({
+        position: "bottom",
+        swipeable: true,
+        text1Style: "",
         type: "success",
         text1: "Profile updated successfully",
       });
 
-      // setTimeout(() => {
-      //   router.back();
-      // }, 1500);
+      setTimeout(() => {
+        router.back();
+      }, 1500);
     } catch (error) {
       Toast.show({
         type: "error",

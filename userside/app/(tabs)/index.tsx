@@ -119,7 +119,7 @@ export default function Index() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={{ flex: 1, backgroundColor: "white" }}>
-        <Header address={selectedAddress} onPressLocation={openBottomSheet} />
+        <Header address={selectedAddress} onPressLocation={() => {}} />
 
         <FlatList
           data={[...categories]}
@@ -171,6 +171,7 @@ export default function Index() {
         />
 
         <BottomSheet
+          enablePanDownToClose={true}
           ref={bottomSheetRef}
           snapPoints={snapPoints}
           index={-1}

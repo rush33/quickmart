@@ -38,7 +38,7 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
     <Pressable
       className={`${
         isPrimary
-          ? "hover:bg-green-200 active:bg-green-400 bg-green-300 border-green-600"
+          ? "hover:bg-green-500 active:bg-green-400 bg-green-500 border-green-500"
           : "bg-gray-500"
       } 
        w-full items-center p-3 rounded-2xl  duration-150 border-2 mb-2
@@ -52,7 +52,7 @@ const PrimaryButton: React.FC<PrimaryButtonProps> = ({
       ) : (
         <Text
           className={`text-center ${
-            isPrimary ? "text-gray-700" : "text-white"
+            isPrimary ? "text-gray-50" : "text-gray-50"
           } font-extrabold text-xl`}
         >
           {title}

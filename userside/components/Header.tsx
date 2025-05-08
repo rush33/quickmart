@@ -29,9 +29,9 @@ const Header = ({ address, onPressLocation }: HeaderProps) => {
           <MaterialIcons name="location-on" size={24} color="#FF4D00" />
           <View>
             <Text style={{ fontSize: 18, fontWeight: "600" }}>{address}</Text>
-            <Text style={{ color: "#666" }}>
+            {/* <Text style={{ color: "#666" }}>
               Tap to change location
-            </Text>
+            </Text> */}
           </View>
         </TouchableOpacity>
       </View>

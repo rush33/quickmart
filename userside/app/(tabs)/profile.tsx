@@ -96,7 +96,7 @@ export default function Profile(): JSX.Element {
             loading={isLoggingOut}
             isPrimary={false}
             onPressFunction={handleLogout}
-            style={{ backgroundColor: "#FA8072" }}
+            style={{ backgroundColor: "#D30000", borderColor: "#D30000" }}
           />
         </View>
       </View>

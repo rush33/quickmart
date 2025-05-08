@@ -9,16 +9,16 @@ import {
   getDoc,
   where,
 } from "firebase/firestore";
-import { db, fetchData, fetchFilteredData } from "@/utils/firebase";
+import { db, fetchFilteredData } from "@/utils/firebase";
 import { router } from "expo-router";
-import { useAuth } from "@/context/AuthContext";
+import { useDispatch } from "react-redux";
+import { clearCart } from "./cartSlice";
 
 const initialState: orderState = {
   data: [],
   loading: false,
   error: null,
 };
-
 
 export const fetchOrders = createAsyncThunk<Order[], string>(
   "order/fetchOrders",
@@ -43,7 +43,7 @@ export const placeOrder = createAsyncThunk<
   try {
     const orderWithTimestamp = {
       ...orderData,
-      createdAt: serverTimestamp(),
+      createdAt: new Date().toISOString(),
     };
 
     const docRef = await addDoc(collection(db, "orders"), orderWithTimestamp);

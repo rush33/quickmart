@@ -1,5 +1,5 @@
 import { CartItem } from "@/types/cartItem";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { Alert } from "react-native";
 
 export interface CartState {
@@ -11,6 +11,8 @@ const initialState: CartState = {
   shopId: null,
   items: [],
 };
+
+export const clearCart = createAction("cart/clear");
 
 export const cartSlice = createSlice({
   name: "cart",
@@ -64,6 +66,11 @@ export const cartSlice = createSlice({
         state.shopId = null;
       }
     },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(clearCart, () => {
+      return { ...initialState };
+    });
   },
 });
 

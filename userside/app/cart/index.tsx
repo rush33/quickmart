@@ -5,12 +5,14 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   selectCartItems,
   selectCartTotal,
   removeFromCart,
+  clearCart,
 } from "@/redux/slices/cartSlice";
 import { Ionicons } from "@expo/vector-icons";
 import { CartItem } from "@/types/cartItem";
@@ -22,11 +24,12 @@ import { Order } from "@/types/order";
 import { router } from "expo-router";
 import PrimaryButton from "@/components/PrimaryButton";
 import RazorpayCheckout from "react-native-razorpay";
+import Toast from "react-native-toast-message";
 interface PaymentResult {
   razorpay_payment_id: string;
   razorpay_order_id: string;
   razorpay_signature: string;
-};
+}
 
 export default function CartScreen() {
   const items = useSelector(selectCartItems);
@@ -60,7 +63,7 @@ export default function CartScreen() {
         items,
         shopId,
         shopName: shop?.name || "",
-        status: orderStatuses.pending,
+        status: orderStatuses.success,
         totalAmount: subTotal,
         userCoords: {
           latitude: user.coords.latitude,
@@ -91,9 +94,16 @@ export default function CartScreen() {
 
           console.log("📤 Dispatching placeOrder...");
           await dispatch(placeOrder(orderPayload));
+          dispatch(clearCart());
         })
         .catch((error: any) => {
           console.error("❌ Payment failed:", error);
+          Alert.alert(
+            "Payment Failed ❌",
+            "Please try again.",
+            [{ text: "OK", style: "default" }],
+            { cancelable: true }
+          );
         });
     } catch (err: any) {
       console.error("❌ Error in handleOrder:", err.message || err);
@@ -154,7 +164,7 @@ export default function CartScreen() {
       {items.length > 0 && (
         <View className="absolute mb-6 bottom-0 w-full bg-white border-t border-gray-200 p-4">
           <View className="flex-row justify-between mb-4">
-            <Text className="text-sm font-normal">Item Toal</Text>
+            <Text className="text-sm font-normal">Item Total</Text>
             <Text className="text-sm font-normal">₹{itemTotal.toFixed(2)}</Text>
           </View>
           <View className="flex-row justify-between mb-4">

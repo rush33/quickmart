@@ -1,5 +1,5 @@
 import { Order } from "@/types/order";
-import { formatFirebaseTimestamp } from "@/utils/formatFirebaseTimestamp ";
+import { formatTimestamp } from "@/utils/formatTimestamp ";
 import { useRouter } from "expo-router";
 import { Pressable, View, Text } from "react-native";
 
@@ -21,7 +21,7 @@ const OrderCard = ({ order }: { order: Order }) => {
             {statusText}
           </Text>
           <Text className="text-sm pt-1 text-gray-700 font-light">
-            {formatFirebaseTimestamp(order.createdAt)}
+            {formatTimestamp(order.createdAt)}
           </Text>
           <Text className="text-sm pt-1 text-gray-700 font-light">
             Order ID #{order.orderId}

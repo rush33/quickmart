@@ -6,6 +6,7 @@ import { fetchFilteredData } from "@/utils/firebase";
 import { where } from "firebase/firestore";
 import { Order } from "@/types/order";
 import { CartItem } from "@/types/cartItem";
+import { formatTimestamp } from "@/utils/formatTimestamp ";
 
 const OrderDetails = () => {
   const { id } = useLocalSearchParams();
@@ -85,8 +86,11 @@ const OrderDetails = () => {
         <View className="gap-y-3">
           <View>
             <Text className="text-sm text-gray-500">Order ID</Text>
-            <Text className="text-base font-medium text-gray-800">
+            <Text className="text-sm font-nomral text-gray-800">
               {order.orderId}
+              <Text className="text-base pt-1 text-gray-700 font-medium">
+                {""} at {formatTimestamp(order.createdAt)}
+              </Text>
             </Text>
           </View>
 

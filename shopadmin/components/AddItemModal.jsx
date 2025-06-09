@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { db } from "@/firebase";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, updateDoc } from "firebase/firestore";
 import { supabase } from "@/supabase"; 
 
 const AddItemModal = ({ setIsActive, shopId }) => {
@@ -19,7 +19,7 @@ const AddItemModal = ({ setIsActive, shopId }) => {
     if (image) {
       const filePath = `shop/${Date.now()}_${image.name}`;
       const { data, error } = await supabase.storage
-        .from("shop") 
+        .from("shop")
         .upload(filePath, image);
 
       if (error) {
@@ -35,18 +35,27 @@ const AddItemModal = ({ setIsActive, shopId }) => {
       console.log("Public URL:", imageUrl);
     }
 
-    await addDoc(collection(db, "items"), {
-      shopId,
-      name,
-      description,
-      price: parseFloat(price),
-      amount: parseFloat(amount),
-      unit,
-      image: imageUrl,
-    });
+    try {
+      const docRef = await addDoc(collection(db, "items"), {
+        shopId,
+        name,
+        description,
+        price: parseFloat(price),
+        amount: parseFloat(amount),
+        unit,
+        image: imageUrl,
+      });
 
-    setIsActive(false);
+      await updateDoc(docRef, {
+        itemId: docRef.id,
+      });
+
+      setIsActive(false);
+    } catch (err) {
+      console.error("Error adding item:", err);
+    }
   };
+  
 
   return (
     <div className="fixed inset-0 z-10 overflow-y-auto">

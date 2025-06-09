@@ -35,24 +35,6 @@ const Header = ({ address, onPressLocation }: HeaderProps) => {
           </View>
         </TouchableOpacity>
       </View>
-
-      {/* Search Bar */}
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          backgroundColor: "#f5f5f5",
-          padding: 12,
-          borderRadius: 12,
-          gap: 8,
-        }}
-      >
-        <Ionicons name="search" size={20} color="#666" />
-        <TextInput placeholder="Search for 'Cake'" style={{ flex: 1 }} />
-        <TouchableOpacity>
-          <Ionicons name="mic" size={20} color="#FF4D00" />
-        </TouchableOpacity>
-      </View>
     </View>
   );
 };

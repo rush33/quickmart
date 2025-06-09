@@ -1,5 +1,5 @@
 import "../../global.css";
-import { View, Text, FlatList, Alert, Image } from "react-native";
+import { View, Text, FlatList, Alert, Image, Pressable } from "react-native";
 import Header from "../../components/Header";
 import ShopCard from "../../components/ShopCard";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -20,6 +20,8 @@ import { useAuth } from "@/context/AuthContext";
 import PrimaryButton from "@/components/PrimaryButton";
 import InputBox from "@/components/InputBox";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
+import Search from "@/components/Search";
+import { router } from "expo-router";
 
 export default function Index() {
   const { updateUserData, user } = useAuth();
@@ -120,6 +122,11 @@ export default function Index() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={{ flex: 1, backgroundColor: "white" }}>
         <Header address={selectedAddress} onPressLocation={() => {}} />
+
+        {/* Search Bar */}
+        <Pressable onPress={() => router.push("/search")}>
+          <Search fake={true} />
+        </Pressable>
 
         <FlatList
           data={[...categories]}

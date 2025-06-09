@@ -5,6 +5,7 @@ import {
   query,
   QueryConstraint,
   updateDoc,
+  where,
 } from "firebase/firestore";
 import { initializeAuth, getReactNativePersistence } from "firebase/auth";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
@@ -74,6 +75,20 @@ export const updateData = async (
     console.log("Document updated successfully");
   } catch (error) {
     console.error("Error updating document:", error);
+    throw error;
+  }
+};
+
+export const searchData = async () => {
+  try {
+    console.log("Search initiated")
+    const q = query(collection(db, "quickmart"), where("items", "==", "Frozen"));
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      console.log(doc.id, " => ", doc.data());
+    });
+  } catch (error) {
+    console.error("Error searching:", error);
     throw error;
   }
 };

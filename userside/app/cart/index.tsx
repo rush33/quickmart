@@ -24,7 +24,7 @@ import { Order } from "@/types/order";
 import { router } from "expo-router";
 import PrimaryButton from "@/components/PrimaryButton";
 import RazorpayCheckout from "react-native-razorpay";
-import Toast from "react-native-toast-message";
+
 interface PaymentResult {
   razorpay_payment_id: string;
   razorpay_order_id: string;
@@ -63,7 +63,7 @@ export default function CartScreen() {
         items,
         shopId,
         shopName: shop?.name || "",
-        status: orderStatuses.success,
+        status: orderStatuses.pending,
         totalAmount: subTotal,
         userCoords: {
           latitude: user.coords.latitude,

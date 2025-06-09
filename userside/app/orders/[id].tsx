@@ -3,34 +3,37 @@ import { FlatList, Image, Text, View, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import { fetchFilteredData } from "@/utils/firebase";
-import { where } from "firebase/firestore";
 import { Order } from "@/types/order";
 import { CartItem } from "@/types/cartItem";
 import { formatTimestamp } from "@/utils/formatTimestamp ";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
+import { db } from "@/utils/firebase";
 
 const OrderDetails = () => {
   const { id } = useLocalSearchParams();
   const [order, setOrder] = useState<Order | null>(null);
 
   useEffect(() => {
-    const fetchOrderDetails = async () => {
-      try {
-        const orderData = await fetchFilteredData("orders", [
-          where("orderId", "==", id),
-        ]);
+    if (!id) return;
 
-        if (orderData.length > 0) {
-          const [order] = orderData;
-          setOrder(order);
+    const q = query(collection(db, "orders"), where("orderId", "==", id));
+    const unsubscribe = onSnapshot(
+      q,
+      (querySnapshot) => {
+        if (!querySnapshot.empty) {
+          const doc = querySnapshot.docs[0];
+          const data = doc.data();
+          setOrder({ ...data, orderId: doc.id });
         } else {
           console.log("Order not found");
         }
-      } catch (error) {
-        console.error("Error fetching order details:", error);
+      },
+      (error) => {
+        console.error("Error listening to order:", error);
       }
-    };
+    );
 
-    id && fetchOrderDetails();
+    return () => unsubscribe(); // cleanup on unmount
   }, [id]);
 
   const renderItem = ({ item }: { item: CartItem }) => (
@@ -51,6 +54,7 @@ const OrderDetails = () => {
       </View>
     );
   }
+  console.log("order in details", order);
 
   return (
     <View className="flex-1 bg-gray-50">
@@ -60,27 +64,36 @@ const OrderDetails = () => {
         </Text>
 
         <View className="flex-row items-center mb-4">
-          <View
-            className={`px-3 py-1 rounded-full ${
-              order.status === "completed"
-                ? "bg-green-100"
-                : order.status === "pending"
-                ? "bg-yellow-100"
-                : "bg-red-100"
-            }`}
-          >
-            <Text
-              className={`text-sm font-medium ${
-                order.status === "completed"
-                  ? "text-green-800"
-                  : order.status === "pending"
-                  ? "text-yellow-800"
-                  : "text-red-800"
-              }`}
-            >
-              {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-            </Text>
-          </View>
+          {(() => {
+            const statusDisplay = {
+              PENDING: { text: "Order Pending ⏳", color: "text-yellow-500" },
+              PREPARING: {
+                text: "Preparing Package",
+                color: "text-yellow-500",
+              },
+              READY: { text: "Ready for Pickup 🛵", color: "text-green-500" },
+              PICKEDUP: {
+                text: "Picked Up by Driver 🚲",
+                color: "text-green-500",
+              },
+              COMPLETE: { text: "Delivered ✅", color: "text-green-500" },
+            };
+
+            const statusInfo = statusDisplay[
+              order.status.toUpperCase() as keyof typeof statusDisplay
+            ] ?? {
+              text: "Unknown Status",
+              color: "text-gray-500",
+            };
+
+            return (
+              <View className="px-3 py-1 rounded-full bg-gray-50">
+                <Text className={`text-lg font-medium ${statusInfo.color}`}>
+                  {statusInfo.text}
+                </Text>
+              </View>
+            );
+          })()}
         </View>
 
         <View className="gap-y-3">

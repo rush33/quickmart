@@ -1,5 +1,5 @@
 export const orderStatuses = {
-  pending: "Pending",
+  pending: "PENDING",
   success: "Successful",
   packing: "Being packed",
   out: "Out for delivery",

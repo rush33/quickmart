@@ -3,12 +3,21 @@ import { formatTimestamp } from "@/utils/formatTimestamp ";
 import { useRouter } from "expo-router";
 import { Pressable, View, Text } from "react-native";
 
+const statusDisplay = {
+  PENDING: { text: "Order Pending ⏳", color: "text-yellow-400" },
+  PREPARING: { text: "Preparing Package", color: "text-yellow-500" },
+  READY: { text: "Ready for Pickup 🛵", color: "text-green-500" },
+  PICKEDUP: { text: "Picked Up by Driver 🚲", color: "text-green-500" },
+  COMPLETE: { text: "Delivered ✅", color: "text-green-500" },
+};
+
 const OrderCard = ({ order }: { order: Order }) => {
   const router = useRouter();
-  const statusText =
-    order.status === "Delivered" ? "Delivered ✅" : order.status;
-  const statusColor =
-    order.status === "Delivered" ? "text-green-500" : "text-orange-500";
+  const normalizedStatus = order.status?.toUpperCase() || "PENDING";
+  const display = statusDisplay[normalizedStatus] || {
+    text: "Unknown Status",
+    color: "text-gray-500",
+  };
 
   return (
     <View className="flex items-center justify-center">
@@ -17,12 +26,14 @@ const OrderCard = ({ order }: { order: Order }) => {
         onPress={() => router.push(`/orders/${order.orderId}`)}
       >
         <View className="w-full">
-          <Text className={`font-bold text-2xl ${statusColor}`}>
-            {statusText}
+          <Text className={`font-bold text-xl ${display.color}`}>
+            {display.text}
           </Text>
+
           <Text className="text-sm pt-1 text-gray-700 font-light">
             {formatTimestamp(order.createdAt)}
           </Text>
+
           <Text className="text-sm pt-1 text-gray-700 font-light">
             Order ID #{order.orderId}
           </Text>

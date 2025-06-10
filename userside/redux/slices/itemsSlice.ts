@@ -1,6 +1,6 @@
 import { Item } from "@/types/item";
 import { ItemsState } from "@/types/itemsState";
-import { fetchFilteredData } from "@/utils/firebase";
+import { fetchData, fetchFilteredData } from "@/utils/firebase";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { where } from "firebase/firestore";
 
@@ -10,6 +10,7 @@ const initialState: ItemsState = {
   error: null,
 };
 
+// Fetch items by shopId
 export const fetchItemsByShopId = createAsyncThunk<Item[], string>(
   "items/fetchByShopId",
   async (shopId, { rejectWithValue }) => {
@@ -38,8 +39,36 @@ export const fetchItemsByShopId = createAsyncThunk<Item[], string>(
   }
 );
 
+// Fetch all items (no filters)
+export const fetchAllItems = createAsyncThunk<Item[]>(
+  "items/fetchAll",
+  async (_, { rejectWithValue }) => {
+    try {
+      const itemsData = await fetchData("items");
+
+      const typedItems: Item[] = itemsData.map((doc: any) => ({
+        itemId: doc.itemId,
+        amount: doc.amount,
+        description: doc.description,
+        image: doc.image,
+        name: doc.name,
+        price: doc.price,
+        shelfLife: doc.shelfLife,
+        shopId: doc.shopId,
+        unit: doc.unit,
+      }));
+      console.log("all items", typedItems)
+      return typedItems;
+    } catch (error) {
+      console.error("Error in fetchAllItems:", error);
+      return rejectWithValue(error);
+    }
+  }
+);
+
+// Slice
 const itemsSlice = createSlice({
-  name: "shop",
+  name: "items",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -52,6 +81,19 @@ const itemsSlice = createSlice({
         state.data = action.payload;
       })
       .addCase(fetchItemsByShopId.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || "Something went wrong";
+      })
+
+      // handle fetchAllItems cases
+      .addCase(fetchAllItems.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchAllItems.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload;
+      })
+      .addCase(fetchAllItems.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Something went wrong";
       });

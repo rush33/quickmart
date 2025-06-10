@@ -1,5 +1,5 @@
 import { Tabs, useRouter } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { tintColor } from "../../constants/Colors";
 
 export default function TabLayout() {
@@ -15,7 +15,7 @@ export default function TabLayout() {
         options={{
           title: "Home",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home" size={size} color={color} />
+            <MaterialIcons name="home-filled" size={size} color={color} />
           ),
         }}
       />
@@ -24,7 +24,7 @@ export default function TabLayout() {
         options={{
           title: "Profile",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person-circle" size={size} color={color} />
+            <MaterialIcons name="person" size={size} color={color} />
           ),
         }}
       />
@@ -33,7 +33,7 @@ export default function TabLayout() {
         options={{
           title: "Orders",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="list-circle" size={size} color={color} />
+            <MaterialIcons name="list-alt" size={size} color={color} />
           ),
         }}
       />

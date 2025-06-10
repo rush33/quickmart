@@ -22,6 +22,7 @@ import InputBox from "@/components/InputBox";
 import ReactNativeAsyncStorage from "@react-native-async-storage/async-storage";
 import Search from "@/components/Search";
 import { router } from "expo-router";
+import { fetchAllItems } from "@/redux/slices/itemsSlice";
 
 export default function Index() {
   const { updateUserData, user } = useAuth();
@@ -43,9 +44,10 @@ export default function Index() {
       logLocalUserData();
       const userdata = await getUserData();
       setUserData(userdata);
+      getLocationAsync(userdata);
       console.log("user data from local db", userdata);
       dispatch(fetchShops());
-      getLocationAsync(userdata);
+      dispatch(fetchAllItems());
     };
 
     initialize();
@@ -99,6 +101,11 @@ export default function Index() {
       // console.log("userdata state", userData);
     } catch (err) {
       console.error("Error getting location:", err);
+      Alert.alert(
+        "Location Error",
+        "Unable to get location. Please check your GPS settings and try again.",
+        [{ text: "OK" }]
+      );
       setSelectedAddress("Unable to get location");
     }
   };

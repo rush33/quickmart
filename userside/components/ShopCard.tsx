@@ -29,7 +29,7 @@ export default function ShopCard({ shop }: ShopCardProps) {
         <Text className="text-xl font-semibold">{shop.name}</Text>
         <View className="flex-row items-center gap-1">
           <View className="bg-[#48C479] px-1 py-0.5 rounded flex-row items-center gap-0.5">
-            <Text className="text-white">{shop.rating}</Text>
+            <Text className="text-white">4.2</Text>
             <Ionicons name="star" size={12} color="white" />
           </View>
         </View>

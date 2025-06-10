@@ -1,1 +1,1 @@
-export const tintColor = "#FF4D00";
+export const tintColor = "#ba03d9";

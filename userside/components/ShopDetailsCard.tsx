@@ -39,15 +39,10 @@ export const ShopDetailsCard = ({ shop }: Props) => {
           </View>
         </View>
 
-        <Text className="text-gray-600 mt-1">{`10 mins • 2 km • ${shop.address}`}</Text>
+        <Text className="text-gray-600 mt-1">{shop.address}</Text>
         <Text className="text-gray-600 mt-1">
           {(shop.genre ?? []).join(" • ")}
         </Text>
-
-        <View className="flex-row items-center space-x-2 mt-1">
-          <Ionicons name="time-outline" size={20} color="#666" />
-          <Text className="text-gray-600 "> 10:00 AM - 11:00 PM</Text>
-        </View>
       </View>
     </>
   );

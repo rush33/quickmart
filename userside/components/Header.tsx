@@ -26,7 +26,7 @@ const Header = ({ address, onPressLocation }: HeaderProps) => {
           style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
           onPress={onPressLocation}
         >
-          <MaterialIcons name="location-on" size={24} color="#FF4D00" />
+          <MaterialIcons name="location-pin" size={24} color="#ba03d9" />
           <View>
             <Text style={{ fontSize: 18, fontWeight: "600" }}>{address}</Text>
             {/* <Text style={{ color: "#666" }}>

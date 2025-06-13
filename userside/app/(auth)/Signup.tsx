@@ -24,6 +24,7 @@ export default function SignupScreen() {
     setLoading(true);
     if (!email || !fname || !password) {
       setError("Please fill in all fields.");
+      setLoading(false);
       return;
     }
 

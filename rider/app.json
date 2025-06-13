@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "driverside",
-    "slug": "driverside",
+    "name": "rider",
+    "slug": "rider",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "driverside",
+    "scheme": "rider",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {

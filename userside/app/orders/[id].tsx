@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { FlatList, Image, Text, View, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
-import { fetchFilteredData } from "@/utils/firebase";
 import { Order } from "@/types/order";
 import { CartItem } from "@/types/cartItem";
 import { formatTimestamp } from "@/utils/formatTimestamp ";
@@ -58,7 +57,7 @@ const OrderDetails = () => {
 
   return (
     <View className="flex-1 bg-gray-50">
-      <View className="bg-white p-6 rounded-b-xl shadow-sm">
+      <View className="bg-white py-2 px-6 rounded-b-xl shadow-sm">
         <Text className="text-xl font-bold text-gray-800 mb-2 text-center">
           Order Details
         </Text>
@@ -68,15 +67,15 @@ const OrderDetails = () => {
             const statusDisplay = {
               PENDING: { text: "Order Pending ⏳", color: "text-yellow-500" },
               PREPARING: {
-                text: "Preparing Package",
-                color: "text-yellow-500",
+                text: "Preparing Package 📦",
+                color: "text-orange-500",
               },
-              READY: { text: "Ready for Pickup 🛵", color: "text-green-500" },
-              PICKEDUP: {
-                text: "Picked Up by Driver 🚲",
+              READY: { text: "Ready for Pickup 🚚", color: "text-green-500" },
+              OUTFORDELIVERY: {
+                text: "Out For Delivery 🚲",
                 color: "text-green-500",
               },
-              COMPLETE: { text: "Delivered ✅", color: "text-green-500" },
+              COMPLETED: { text: "Delivered ✅", color: "text-green-500" },
             };
 
             const statusInfo = statusDisplay[

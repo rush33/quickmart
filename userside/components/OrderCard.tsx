@@ -5,10 +5,10 @@ import { Pressable, View, Text } from "react-native";
 
 const statusDisplay = {
   PENDING: { text: "Order Pending ⏳", color: "text-yellow-400" },
-  PREPARING: { text: "Preparing Package", color: "text-yellow-500" },
-  READY: { text: "Ready for Pickup 🛵", color: "text-green-500" },
-  PICKEDUP: { text: "Picked Up by Driver 🚲", color: "text-green-500" },
-  COMPLETE: { text: "Delivered ✅", color: "text-green-500" },
+  PREPARING: { text: "Preparing Package 📦", color: "text-orange-500" },
+  READY: { text: "Ready for Pickup 🚚", color: "text-green-500" },
+  OUTFORDELIVERY: { text: "Out For Delivery 🚲", color: "text-green-500" },
+  COMPLETED: { text: "Delivered ✅", color: "text-green-500" },
 };
 
 const OrderCard = ({ order }: { order: Order }) => {

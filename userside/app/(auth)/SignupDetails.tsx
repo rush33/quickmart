@@ -30,6 +30,23 @@ export default function SignupDetails() {
       return;
     }
 
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!phoneRegex.test(phone.trim())) {
+      Alert.alert(
+        "Invalid Phone Number",
+        "Please enter a valid 10-digit phone number."
+      );
+      return;
+    }
+
+    if (address.trim().length < 5) {
+      Alert.alert(
+        "Invalid Address",
+        "Address must be at least 5 characters long."
+      );
+      return;
+    }
+
     setLoading(true);
     const res = await SignUp(email, password, fname, phone, address);
     setLoading(false);
@@ -61,6 +78,8 @@ export default function SignupDetails() {
             placeholder="Phone Number"
             value={phone}
             onChangeText={setPhone}
+            keyboardType="number-pad"
+            maxLength={10}
           />
           <InputBox
             placeholder="Address"

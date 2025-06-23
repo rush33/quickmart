@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { db } from "@/firebase";
 import { collection, addDoc, updateDoc } from "firebase/firestore";
-import { supabase } from "@/supabase"; 
+import { supabase } from "@/supabase";
 
 const AddItemModal = ({ setIsActive, shopId }) => {
   const [name, setName] = useState("");
   const [image, setImage] = useState(null);
   const [price, setPrice] = useState("");
+  const [category, setCategory] = useState("")
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
   const [unit, setUnit] = useState("g");
@@ -38,6 +39,7 @@ const AddItemModal = ({ setIsActive, shopId }) => {
     try {
       const docRef = await addDoc(collection(db, "items"), {
         shopId,
+        category,
         name,
         description,
         price: parseFloat(price),
@@ -55,7 +57,6 @@ const AddItemModal = ({ setIsActive, shopId }) => {
       console.error("Error adding item:", err);
     }
   };
-  
 
   return (
     <div className="fixed inset-0 z-10 overflow-y-auto">
@@ -158,6 +159,16 @@ const AddItemModal = ({ setIsActive, shopId }) => {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Description"
+                  className="w-full pl-2 pr-3 py-2 text-gray-500 bg-transparent outline-none border-2 focus:border-green-500 shadow-sm rounded-lg"
+                />
+              </div>
+
+              <div className="relative my-6">
+                <input
+                  type="text"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  placeholder="Category (eg: Fruits, Dairy)"
                   className="w-full pl-2 pr-3 py-2 text-gray-500 bg-transparent outline-none border-2 focus:border-green-500 shadow-sm rounded-lg"
                 />
               </div>

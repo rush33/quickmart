@@ -20,13 +20,13 @@ export const fetchItemsByShopId = createAsyncThunk<Item[], string>(
       ]);
 
       const typedItems: Item[] = itemsData.map((doc: any) => ({
-        itemId: doc.itemId,
         amount: doc.amount,
+        category: doc.catefory,
         description: doc.description,
         image: doc.image,
+        itemId: doc.itemId,
         name: doc.name,
         price: doc.price,
-        shelfLife: doc.shelfLife,
         shopId: doc.shopId,
         unit: doc.unit,
       }));
@@ -47,13 +47,13 @@ export const fetchAllItems = createAsyncThunk<Item[]>(
       const itemsData = await fetchData("items");
 
       const typedItems: Item[] = itemsData.map((doc: any) => ({
-        itemId: doc.itemId,
         amount: doc.amount,
+        category: doc.category,
         description: doc.description,
         image: doc.image,
+        itemId: doc.itemId,
         name: doc.name,
         price: doc.price,
-        shelfLife: doc.shelfLife,
         shopId: doc.shopId,
         unit: doc.unit,
       }));

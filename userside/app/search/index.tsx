@@ -27,7 +27,13 @@ const SearchScreen = () => {
 
   return (
     <View className="flex-1 bg-white">
-      <Search onChangeText={setSearchValue} value={searchValue} autoFocus />
+      <Search
+        onChangeText={setSearchValue}
+        value={searchValue}
+        autoFocus
+        showBackButton={true}
+        onBackPress={() => router.back()}
+      />
 
       {loading && (
         <Text className="text-center text-base text-gray-600 mt-4">

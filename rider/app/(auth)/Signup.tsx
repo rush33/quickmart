@@ -23,18 +23,35 @@ export default function SignupScreen() {
 
   const goToNextStep = () => {
     setLoading(true);
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     if (!email || !password) {
       setError("Please fill in all fields.");
       setLoading(false);
       return;
     }
 
+    if (!emailRegex.test(email)) {
+      setError("Please enter a valid email address.");
+      setLoading(false);
+      return;
+    }
+
+    if (password.length < 6) {
+      setError("Password should be at least 6 characters long.");
+      setLoading(false);
+      return;
+    }
+
+    setError("");
     router.navigate({
       pathname: "/(auth)/SignupDetails",
       params: { email, password },
     });
     setLoading(false);
   };
+  
 
   return (
     <View className="flex-1 bg-black">

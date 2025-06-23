@@ -27,12 +27,44 @@ export default function SignupDetails() {
   const router = useRouter();
 
   const handleFinalSignup = async () => {
-    if (!phone || !fname || !lname) {
+    if (!fname.trim() || !lname.trim() || !phone.trim()) {
       Alert.alert("Error", "Please fill in all fields");
       return;
     }
+
+    if (fname.trim().length < 2) {
+      Alert.alert(
+        "Invalid First Name",
+        "First name must be at least 2 characters."
+      );
+      return;
+    }
+
+    if (lname.trim().length < 2) {
+      Alert.alert(
+        "Invalid Last Name",
+        "Last name must be at least 2 characters."
+      );
+      return;
+    }
+
+    const phoneRegex = /^[0-9]{10}$/;
+    if (!phoneRegex.test(phone.trim())) {
+      Alert.alert(
+        "Invalid Phone Number",
+        "Phone number must be exactly 10 digits."
+      );
+      return;
+    }
+
     setLoading(true);
-    const res = await SignUp(email, password, fname, lname, phone);
+    const res = await SignUp(
+      email,
+      password,
+      fname.trim(),
+      lname.trim(),
+      phone.trim()
+    );
     setLoading(false);
   };
 
@@ -71,6 +103,8 @@ export default function SignupDetails() {
             placeholder="Phone Number"
             value={phone}
             onChangeText={setPhone}
+            keyboardType="number-pad"
+            maxLength={10}
           />
 
           <PrimaryButton

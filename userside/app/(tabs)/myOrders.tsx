@@ -36,7 +36,7 @@ const MyOrders = () => {
       <View className="p-2 bg-white shadow-xs">
         <Text className="text-xl font-bold text-center">My Orders</Text>
       </View>
-      <Text>Loading...</Text>
+      <Text className="text-center font-medium text-gray-500">Loading...</Text>
     </View>
   ) : (
     <View className="bg-white flex-1">

@@ -141,7 +141,8 @@ export default function Index() {
           renderItem={({ item }) => (
             <View style={{ marginBottom: 16, paddingHorizontal: 16 }}>
               <Text
-                style={{ fontSize: 18, fontWeight: "bold", marginBottom: 8 }}
+                // style={{ fontSize: 18, fontWeight: "bold", marginBottom: 8 }}
+                className="font-bold text-lg mb-2"
               >
                 {item.title}
               </Text>
@@ -173,9 +174,12 @@ export default function Index() {
           )}
           ListFooterComponent={
             loading ? (
-              <Text>Loading...</Text>
+              <Text className="text-center font-medium text-gray-500">
+                Loading shops...
+              </Text>
             ) : (
               <View style={{ paddingHorizontal: 16 }}>
+                <Text className="font-bold text-lg">Browse By Shops</Text>
                 {shopData.map((shop) => (
                   <ShopCard key={shop.id} shop={shop} />
                 ))}

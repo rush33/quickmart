@@ -32,7 +32,7 @@ export default function SignupDetails() {
       return;
     }
     setLoading(true);
-    const res = await SignUp(email, password, fname, phone, lname);
+    const res = await SignUp(email, password, fname, lname, phone);
     setLoading(false);
   };
 

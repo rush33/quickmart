@@ -23,6 +23,7 @@ const OrderDetails = () => {
           const doc = querySnapshot.docs[0];
           const data = doc.data();
           setOrder({ ...data, orderId: doc.id });
+          console.log("order:");
         } else {
           console.log("Order not found");
         }
@@ -54,6 +55,7 @@ const OrderDetails = () => {
     );
   }
   console.log("order in details", order);
+  console.log("rider in details", order.riderId);
 
   return (
     <View className="flex-1 bg-gray-50">
@@ -119,6 +121,28 @@ const OrderDetails = () => {
               ₹{order.totalAmount.toFixed(2)}
             </Text>
           </View>
+          {order.status === "OUTFORDELIVERY" &&
+            order.riderName &&
+            order.riderPhone && (
+              <View>
+                <Text className="text-base font-medium text-gray-600">
+                  {order.riderName} is on the way with your order!
+                </Text>
+                <Text className="text-xl font-bold text-primary">
+                  Reach him at {order.riderPhone}
+                </Text>
+              </View>
+            )}
+
+          {order.status === "COMPLETED" &&
+            order.riderName &&
+            order.riderPhone && (
+              <View>
+                <Text className="text-sm font-medium text-gray-500">
+                  Your order was delivered by {order.riderName}
+                </Text>
+              </View>
+            )}
         </View>
       </View>
 

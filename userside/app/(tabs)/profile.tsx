@@ -11,6 +11,8 @@ import { getUserData } from "@/utils/userData";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import PrimaryButton from "@/components/PrimaryButton";
 import { useAuth } from "@/context/AuthContext";
+import { useDispatch } from "react-redux";
+import { clearCart } from "@/redux/slices/cartSlice";
 
 export default function Profile(): JSX.Element {
   const [name, setName] = useState<string | null>(null);
@@ -18,6 +20,7 @@ export default function Profile(): JSX.Element {
   const [phoneNumber, setPhoneNumber] = useState<string | null>(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const router = useRouter();
+  const dispatch = useDispatch();
   const { SignOut } = useAuth();
 
   useEffect(() => {
@@ -33,6 +36,7 @@ export default function Profile(): JSX.Element {
   const handleLogout = async (): Promise<void> => {
     setIsLoggingOut(true);
     try {
+      dispatch(clearCart());
       await SignOut();
       router.replace("/(auth)/Login");
     } finally {

@@ -12,7 +12,6 @@ const initialState: CartState = {
   items: [],
 };
 
-export const clearCart = createAction("cart/clear");
 
 export const cartSlice = createSlice({
   name: "cart",
@@ -66,6 +65,7 @@ export const cartSlice = createSlice({
         state.shopId = null;
       }
     },
+    clearCart: () => initialState,
   },
   extraReducers: (builder) => {
     builder.addCase(clearCart, () => {
@@ -74,7 +74,7 @@ export const cartSlice = createSlice({
   },
 });
 
-export const { addToCart, removeFromCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, clearCart } = cartSlice.actions;
 
 export interface RootState {
   cart: CartState;

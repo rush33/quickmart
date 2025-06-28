@@ -7,11 +7,11 @@ import rootReducer from "./rootReducer";
 
 export const store = configureStore({
   reducer: {
+    reducer: rootReducer,
     cart: cartReducer,
     shop: shopReducer,
     shopProducts: itemsReducer,
     order: orderReducer,
-    rootReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

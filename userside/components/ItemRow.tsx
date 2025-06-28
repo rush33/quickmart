@@ -51,7 +51,10 @@ export default function ItemRow({ item }: Props) {
           </View>
 
           <View className="flex-row items-center gap-1">
-            <Text className="text-lg font-semibold text-gray-800">
+            <Text
+              className="text-lg font-semibold text-gray-800"
+              numberOfLines={2}
+            >
               {item.name}
             </Text>
           </View>
@@ -69,7 +72,7 @@ export default function ItemRow({ item }: Props) {
         {item.description ? (
           <Text
             className="text-xs text-gray-600"
-            numberOfLines={4}
+            numberOfLines={3}
             ellipsizeMode="tail"
           >
             {item.description}
@@ -77,8 +80,6 @@ export default function ItemRow({ item }: Props) {
         ) : null}
       </View>
 
-      {/* Image and Add/Remove Buttons */}
-      {/* Image and Add/Remove Buttons */}
       <View className="w-28 items-center relative">
         <Image source={{ uri: item.image }} className="w-28 h-28 rounded-lg" />
 

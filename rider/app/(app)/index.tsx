@@ -12,6 +12,7 @@ import {
   BackHandler,
   Alert,
   StyleSheet,
+  Linking,
 } from "react-native";
 import * as Location from "expo-location";
 import { LocationObjectCoords } from "expo-location";
@@ -84,13 +85,21 @@ export default function Home() {
 
       // 📍 Location permission and fetching
       const { status } = await Location.requestForegroundPermissionsAsync();
+
       if (status !== "granted") {
         Alert.alert(
-          "Permission Denied",
-          "Location permission is required to continue.",
+          "Location Permission Required",
+          "This app needs access to your location to function properly.\n\nPlease enable location permission from the app settings.",
           [
             {
-              text: "OK",
+              text: "Go to Settings",
+              onPress: () => {
+                Linking.openSettings(); // opens the app settings
+              },
+            },
+            {
+              text: "Exit App",
+              style: "destructive",
               onPress: () => {
                 if (Platform.OS === "android") {
                   BackHandler.exitApp();

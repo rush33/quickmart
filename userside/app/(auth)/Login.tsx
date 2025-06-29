@@ -28,7 +28,7 @@ export default function Login() {
       setLoading(true);
       const res = await SignIn(email, password);
       if (!res.success) {
-        Alert.alert("Sign In", res.msg);
+        Alert.alert("Sign In Failed", res.msg);
       }
     } catch (err) {
       setError(err.message);

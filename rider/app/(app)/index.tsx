@@ -56,7 +56,10 @@ export default function Home() {
     let unsubscribe: () => void;
 
     (async () => {
-      const q = query(collection(db, "orders"), where("status", "==", "READY"));
+      const q = query(
+        collection(db, "orders"),
+        where("status", "in", ["READY", "OUTFORDELIVERY"])
+      );
       unsubscribe = onSnapshot(q, async (snapshot) => {
         const orderDocs = snapshot.docs.map((doc) => ({
           orderId: doc.id,

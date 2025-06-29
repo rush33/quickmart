@@ -31,7 +31,6 @@ export default function Login() {
       }
     } catch (err: any) {
       setError(err.message);
-      
     } finally {
       setLoading(false);
     }
@@ -40,20 +39,16 @@ export default function Login() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : undefined}
-      className="flex-1 bg-black"
+      className="flex-1"
     >
-      {/* Top Image Section */}
       <Image
         source={require("../../assets/images/cycle.jpg")}
         className="absolute w-full h-2/3"
         resizeMode="cover"
       />
 
-      {/* Content Overlay */}
       <View className="flex-1 justify-end">
-        {/* White curved container */}
-        <View className="bg-white rounded-t-[40px] px-8 pt-10 pb-14">
-          {/* TODO: FIND BETTER APPROACH TO KEYBOARD AVOID VIEW OR make pb less when the keybpard avoiding view has been activated and things are moved up */}
+        <View className="bg-white rounded-t-[40px] px-8 pt-10 pb-10">
           <Text className="text-2xl font-extrabold mb-3">Welcome Back!</Text>
           <Text className="text-base text-gray-600 mb-8">
             Sign in to start your grocery delivery adventure

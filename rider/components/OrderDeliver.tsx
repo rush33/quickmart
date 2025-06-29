@@ -198,7 +198,7 @@ const OrderDeliver: React.FC<Props> = ({ selectedOrder, onBackPressed }) => {
         <Pressable
           className="bg-[#3FC060] rounded-md py-3"
           onPress={onButtonPressed}
-          disabled={loading}
+          // disabled={loading}
         >
           {loading ? (
             <ActivityIndicator color="white" />

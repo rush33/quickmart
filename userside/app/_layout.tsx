@@ -24,14 +24,6 @@ const MainLayout = () => {
     }
   }, [isAuthenticated, initializing, segments]);
 
-  // if (initializing) {
-  //   return (
-  //     <View className="flex-1 justify-center items-center bg-white">
-  //       <ActivityIndicator size="large" color="#000" />
-  //     </View>
-  //   );
-  // }
-
   return (
     <Provider store={store}>
       <Slot />

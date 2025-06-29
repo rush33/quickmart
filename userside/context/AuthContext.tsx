@@ -1,8 +1,6 @@
 import { store } from "@/redux/store";
-import { User } from "@/types/user";
 import { auth, db, fetchFilteredData, updateData } from "@/utils/firebase";
 import {
-  getUserData,
   logLocalUserData,
   updateUserDataField,
 } from "@/utils/userData";

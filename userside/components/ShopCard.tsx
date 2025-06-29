@@ -1,5 +1,5 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Feather, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { Shop } from "@/types/shop";
 
@@ -27,15 +27,28 @@ export default function ShopCard({ shop }: ShopCardProps) {
       {/* Shop Details */}
       <View className="flex-1 gap-1">
         <Text className="text-xl font-semibold">{shop.name}</Text>
-        <View className="flex-row items-center gap-1">
-          <View className="bg-[#48C479] px-1 py-0.5 rounded flex-row items-center gap-0.5">
-            <Text className="text-white">4.2</Text>
-            <Ionicons name="star" size={12} color="white" />
-          </View>
+
+        <View className="flex-row items-center mb-1">
+          <Feather
+            name="shopping-bag"
+            size={13}
+            color="green"
+            style={{ marginRight: 3 }}
+          />
+          <Text className="text-gray-600 text-[12px] flex-row items-center">
+            {shop.genre.join(", ")}
+          </Text>
         </View>
 
-        <Text className="text-gray-600">{shop.genre.join(", ")}</Text>
-        <Text className="text-gray-600">{shop.address}</Text>
+        <View className="flex-row items-center mb-1">
+          <Feather
+            name="navigation"
+            size={13}
+            color="#ba03d9"
+            style={{ marginRight: 3 }}
+          />
+          <Text className="text-gray-600 text-[12px]">{shop.address}</Text>
+        </View>
       </View>
     </TouchableOpacity>
   );

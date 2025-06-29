@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   FlatList,
   Image,
@@ -7,23 +7,36 @@ import {
   TouchableOpacity,
   Pressable,
 } from "react-native";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Search from "@/components/Search";
-import { RootState } from "@/redux/store";
-import { router } from "expo-router";
+import { AppDispatch, RootState } from "@/redux/store";
+import { router, useLocalSearchParams } from "expo-router";
+import { fetchAllItems } from "@/redux/slices/itemsSlice";
 
 const SearchScreen = () => {
-  const [searchValue, setSearchValue] = useState("");
-
-  const {
-    data: items,
-    loading,
-    error,
-  } = useSelector((state: RootState) => state.shopProducts);
-
-  const filteredItems = items.filter((item) =>
-    item.name.toLowerCase().includes(searchValue.toLowerCase())
+  const { searchTerm } = useLocalSearchParams();
+  const [searchValue, setSearchValue] = useState(
+    typeof searchTerm === "string" ? searchTerm : ""
   );
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    setLoading(true);
+    dispatch(fetchAllItems());
+    setLoading(false);
+  }, []);
+
+  const { data: items, error } = useSelector(
+    (state: RootState) => state.shopProducts
+  );
+  const filteredItems = searchValue
+    ? items.filter(
+        (item) =>
+          item.name.toLowerCase().includes(searchValue.toLowerCase()) ||
+          item.category.toLowerCase().includes(searchValue.toLowerCase())
+      )
+    : items;
 
   return (
     <View className="flex-1 bg-white">

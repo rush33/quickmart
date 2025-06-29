@@ -10,6 +10,7 @@ import { categories } from "@/constants/categories";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import * as Location from "expo-location";
+import { Platform, BackHandler, Linking } from "react-native";
 import {
   getUserData,
   logLocalUserData,
@@ -55,15 +56,59 @@ export default function Index() {
 
   const openBottomSheet = () => bottomSheetRef.current?.expand();
 
+  const withTimeout = (promise: Promise<any>, ms: number) => {
+    return new Promise((resolve, reject) => {
+      const timeoutId = setTimeout(() => {
+        reject(new Error("Location request timed out"));
+      }, ms);
+
+      promise
+        .then((res) => {
+          clearTimeout(timeoutId);
+          resolve(res);
+        })
+        .catch((err) => {
+          clearTimeout(timeoutId);
+          reject(err);
+        });
+    });
+  };
+
   const getLocationAsync = async (currentUser: User | null) => {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
+
       if (status !== "granted") {
-        Alert.alert("Permission denied", "Location permission is required.");
+        Alert.alert(
+          "Location Permission Required",
+          "This app needs access to your location to function properly.\n\nPlease enable location permission from the app settings.",
+          [
+            {
+              text: "Go to Settings",
+              onPress: () => {
+                Linking.openSettings();
+              },
+            },
+            {
+              text: "Exit App",
+              style: "destructive",
+              onPress: () => {
+                if (Platform.OS === "android") {
+                  BackHandler.exitApp();
+                }
+              },
+            },
+          ],
+          { cancelable: false }
+        );
         return;
       }
 
-      const location = await Location.getCurrentPositionAsync({});
+      // const location = await Location.getCurrentPositionAsync({});
+      const location = await withTimeout(
+        Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.High }),
+        20000
+      );
       const [addressObj] = await Location.reverseGeocodeAsync({
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
@@ -83,28 +128,29 @@ export default function Index() {
           longitude: location.coords.longitude,
         },
       });
-
-      // const updatedUserData: User = {
-      //   ...userData,
-      //   coords: {
-      //     latitude: location.coords.latitude,
-      //     longitude: location.coords.longitude,
-      //   },
-      // };
-
-      // console.log("updated userdata", updatedUserData);
-      // setUserData(updatedUserData);
-      // await ReactNativeAsyncStorage.setItem(
-      //   "userData",
-      //   JSON.stringify(updatedUserData)
-      // );
-      // console.log("userdata state", userData);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error getting location:", err);
       Alert.alert(
         "Location Error",
-        "Unable to get location. Please check your GPS settings and try again.",
-        [{ text: "OK" }]
+        err.message.includes("timed out")
+          ? "Location request timed out. Please check your GPS and try again."
+          : "Unable to get location. Please check your GPS settings and try again.",
+        [
+          {
+            text: "Go to Settings",
+            onPress: () => Linking.openSettings(),
+          },
+          {
+            text: "Exit App",
+            style: "destructive",
+            onPress: () => {
+              if (Platform.OS === "android") {
+                BackHandler.exitApp();
+              }
+            },
+          },
+        ],
+        { cancelable: false }
       );
       setSelectedAddress("Unable to get location");
     }
@@ -151,8 +197,18 @@ export default function Index() {
                 numColumns={4}
                 keyExtractor={(subItem, idx) => `${item.title}-${idx}`}
                 renderItem={({ item: subItem }) => (
-                  <View
-                    style={{ width: "25%", padding: 8, alignItems: "center" }}
+                  <Pressable
+                    onPress={() =>
+                      router.push({
+                        pathname: "/search",
+                        params: { searchTerm: subItem.category },
+                      })
+                    }
+                    style={{
+                      width: "25%",
+                      paddingHorizontal: 8,
+                      alignItems: "center",
+                    }}
                   >
                     <Image
                       source={{ uri: subItem.image }}
@@ -167,7 +223,7 @@ export default function Index() {
                     >
                       {subItem.name}
                     </Text>
-                  </View>
+                  </Pressable>
                 )}
               />
             </View>

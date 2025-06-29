@@ -1,4 +1,4 @@
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Feather, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import React from "react";
 import {
   View,
@@ -26,7 +26,8 @@ const Header = ({ address, onPressLocation }: HeaderProps) => {
           style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
           onPress={onPressLocation}
         >
-          <MaterialIcons name="location-pin" size={24} color="#ba03d9" />
+          
+          <Feather name="map-pin" size={24} color="#ba03d9" />
           <View>
             <Text style={{ fontSize: 18, fontWeight: "600" }}>{address}</Text>
             {/* <Text style={{ color: "#666" }}>

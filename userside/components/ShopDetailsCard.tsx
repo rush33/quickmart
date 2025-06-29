@@ -30,13 +30,6 @@ export const ShopDetailsCard = ({ shop }: Props) => {
       <View className="bg-white mx-4 p-4 rounded-xl -mt-12 shadow-md mb-10">
         <View className="flex-row">
           <Text className="text-xl font-bold">{shop.name}</Text>
-
-          <View className="flex-row items-center space-x-2">
-            <View className="ml-2 flex-row items-center bg-green-500 px-2 py-1 rounded-md">
-              <Text className="text-white font-semibold">{shop.rating}</Text>
-              <Ionicons name="star" size={14} color="white" className="ml-1" />
-            </View>
-          </View>
         </View>
 
         <Text className="text-gray-600 mt-1">{shop.address}</Text>

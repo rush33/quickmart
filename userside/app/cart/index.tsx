@@ -99,7 +99,7 @@ export default function CartScreen() {
         .catch((error: any) => {
           console.error("❌ Payment failed:", error);
           Alert.alert(
-            "Payment Failed ❌",
+            "Payment Failed",
             "Please try again.",
             [{ text: "OK", style: "default" }],
             { cancelable: true }

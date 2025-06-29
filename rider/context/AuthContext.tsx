@@ -15,6 +15,7 @@ import {
   useState,
   ReactNode,
 } from "react";
+import { Alert } from "react-native";
 
 interface AuthContextProps {
   user: FirebaseUser | null;
@@ -25,7 +26,7 @@ interface AuthContextProps {
     password: string,
     fname: string,
     lname: string,
-    phone: string,
+    phone: string
   ) => Promise<{ success: boolean; msg?: string }>;
   SignIn: (
     email: string,
@@ -102,23 +103,32 @@ export const AuthContextProvider = ({ children }: { children: ReactNode }) => {
   const SignIn = async (email: string, password: string) => {
     try {
       setInitializing(true);
+
       const res = await signInWithEmailAndPassword(auth, email, password);
       const userRef = doc(db, "riders", res.user.uid);
       const userSnap = await getDoc(userRef);
 
-      if (userSnap.exists()) {
-        const userData = userSnap.data();
-        console.log("✅ Firestore: User data loaded on SignIn", userData);
+      if (!userSnap.exists()) {
+        await signOut(auth);
+
+        // Set error message to be handled by frontend
+        return {
+          success: false,
+          msg: "You are not authorized to login as a rider. Please login in the user app.",
+        };
       }
 
+      // Optional: Use userSnap.data() if needed
       return { success: true };
     } catch (error: any) {
       let msg = error.message;
+
       if (msg.includes("(auth/invalid-email)")) msg = "Email is invalid";
       if (msg.includes("(auth/invalid-credential)"))
-        msg = "Email or Password is incorrect";
+        msg = "Email or password is incorrect";
       if (msg.includes("(auth/user-not-found)")) msg = "User not found";
       if (msg.includes("(auth/wrong-password)")) msg = "Incorrect password";
+
       return { success: false, msg };
     } finally {
       setInitializing(false);

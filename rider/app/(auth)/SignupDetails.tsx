@@ -66,6 +66,10 @@ export default function SignupDetails() {
       phone.trim()
     );
     setLoading(false);
+
+    if (!res.success) {
+      Alert.alert("Sign Up Failed", res.msg);
+    }
   };
 
   return (

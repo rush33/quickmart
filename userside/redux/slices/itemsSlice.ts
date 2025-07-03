@@ -21,7 +21,7 @@ export const fetchItemsByShopId = createAsyncThunk<Item[], string>(
 
       const typedItems: Item[] = itemsData.map((doc: any) => ({
         amount: doc.amount,
-        category: doc.catefory,
+        category: doc.category,
         description: doc.description,
         image: doc.image,
         itemId: doc.itemId,
@@ -57,7 +57,7 @@ export const fetchAllItems = createAsyncThunk<Item[]>(
         shopId: doc.shopId,
         unit: doc.unit,
       }));
-      console.log("all items", typedItems)
+      console.log("all items", typedItems);
       return typedItems;
     } catch (error) {
       console.error("Error in fetchAllItems:", error);
